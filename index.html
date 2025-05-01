@@ -191,7 +191,6 @@
         .nav-links {
             display: flex;
             list-style: none;
-            align-items: center;
         }
 
         .nav-links li {
@@ -230,11 +229,10 @@
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             margin-left: 1.5rem;
             transition: color 0.3s ease;
-            z-index: 1001;
         }
 
         .theme-toggle:hover, .menu-toggle:hover {
@@ -693,8 +691,6 @@
             transition: color 0.3s ease;
         }
 
-        ει
-
         .close-modal:hover {
             color: var(--accent);
         }
@@ -709,7 +705,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .modal-description Edison: 100px;
         .modal-description {
             margin-bottom: 1.5rem;
         }
@@ -827,18 +822,16 @@
             justify-content: center;
             list-style: none;
             margin: 1.5rem 0;
-            flex-wrap: wrap;
         }
 
         .footer-links li {
-            margin: 0.5rem 1rem;
+            margin: 0 1rem;
         }
 
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
             transition: color 0.3s ease;
-            font-size: 1rem;
         }
 
         .footer-links a:hover {
@@ -849,7 +842,6 @@
             display: flex;
             justify-content: center;
             margin: 1.5rem 0;
-            flex-wrap: wrap;
         }
 
         .footer-social a {
@@ -861,7 +853,7 @@
             background: var(--bg-card);
             color: var(--text-primary);
             border-radius: 50%;
-            margin: 0.5rem;
+            margin: 0 0.5rem;
             transition: all 0.3s ease;
         }
 
@@ -1042,13 +1034,12 @@
                 align-items: center;
                 padding: 1rem 0;
                 box-shadow: var(--shadow);
-                display: none;
-                z-index: 1000;
-                transition: all 0.3s ease;
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: clip-path 0.3s ease;
             }
             
             .nav-links.active {
-                display: flex;
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
             }
             
             .nav-links li {
@@ -1087,34 +1078,6 @@
             
             .projects-grid {
                 grid-template-columns: 1fr;
-            }
-
-            /* Footer Responsive */
-            .footer-logo {
-                font-size: 1.8rem;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-            }
-            
-            .footer-links li {
-                margin: 0.5rem 0;
-            }
-            
-            .footer-social {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .footer-social a {
-                margin: 0.5rem;
-            }
-            
-            .copyright {
-                font-size: 0.8rem;
-                padding: 0 1rem;
             }
         }
 
@@ -1156,15 +1119,6 @@
             .project-card {
                 height: 300px;
             }
-            
-            /* Footer Responsive */
-            .footer-logo {
-                font-size: 1.5rem;
-            }
-            
-            .footer-content p {
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -1177,7 +1131,7 @@
                     <div class="logo-icon">
                         <span class="logo-text">F</span>
                     </div>
-                    <span>Farhad</span>
+<span>Farhad</span>
                 </a>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
@@ -1525,7 +1479,7 @@
                     <a href="#"><i class="fab fa-twitter"></i></a>
                     <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
-                <p class="copyright">© 2025 Farhad. All rights reserved.</p>
+                <p class="copyright">&copy; 2025 Farhad. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -1546,9 +1500,6 @@
 
             menuToggle.addEventListener('click', function() {
                 navLinks.classList.toggle('active');
-                const icon = menuToggle.querySelector('i');
-                icon.classList.toggle('fa-bars');
-                icon.classList.toggle('fa-times');
             });
 
             // Theme Toggle
@@ -1747,9 +1698,6 @@
                         // Close mobile menu if open
                         if (navLinks.classList.contains('active')) {
                             navLinks.classList.remove('active');
-                            const icon = menuToggle.querySelector('i');
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
                         }
                     }
                 });
