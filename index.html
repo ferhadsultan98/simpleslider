@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduSys Pro - Tutoring & Exam System</title>
+    <title>EduSys Pro - Təhsil İdarəetmə Sistemi</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* 🎨 1. General Styles & Variables */
+        /* --- 1. Qlobal Stillər və Dəyişənlər --- */
         :root {
             --primary-blue: #007BFF;
             --primary-blue-hover: #0056b3;
-            --light-blue: #e6f2ff;
+            --light-blue: #f0f8ff;
             --dark-gray: #343a40;
             --medium-gray: #6c757d;
             --light-gray: #f8f9fa;
@@ -22,584 +22,545 @@
             --white: #ffffff;
             --success-green: #28a745;
             --danger-red: #dc3545;
+            --warning-orange: #ffc107;
             --font-family: 'Poppins', sans-serif;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: var(--font-family);
             background-color: var(--light-gray);
             color: var(--dark-gray);
             line-height: 1.6;
         }
+        .hidden { display: none !important; }
+
+        /* --- 2. Əsas Struktur və Köməkçi Stillər --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        main { padding-top: 80px; }
+        section { padding: 60px 0; border-bottom: 1px solid var(--border-color); }
+        section:last-child { border-bottom: none; }
+        h1, h2, h3 { margin-bottom: 20px; font-weight: 600; }
+        h2 { text-align: center; color: var(--primary-blue); margin-bottom: 40px; }
         
-        /* 🏗️ 2. Layout & Container */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        /* --- 3. Naviqasiya Paneli --- */
+        .navbar { background-color: var(--white); box-shadow: var(--shadow); position: fixed; width: 100%; top: 0; left: 0; z-index: 1000; }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .navLogo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
+        .navLinks { list-style: none; display: flex; gap: 25px; align-items: center; }
+        .navLinks a { text-decoration: none; color: var(--medium-gray); font-weight: 500; transition: color 0.3s ease; padding: 5px; }
+        .navLinks a:hover { color: var(--primary-blue); }
+        #logoutButton { background: none; border: none; color: var(--danger-red); font-size: 1rem; cursor: pointer; font-family: var(--font-family); font-weight: 500;}
+        #logoutButton:hover { text-decoration: underline; }
 
-        main {
-            padding-top: 80px; /* Offset for fixed navbar */
-        }
+        .hamburgerMenu { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+        .hamburgerMenu .bar { width: 25px; height: 3px; background-color: var(--dark-gray); border-radius: 5px; transition: all 0.3s ease-in-out; }
+
+        /* --- 4. Ümumi Komponentlər (Kart, Düymə, Forma) --- */
+        .card { background-color: var(--white); border-radius: 8px; box-shadow: var(--shadow); padding: 25px; margin-bottom: 20px; }
+        .gridContainer { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .btn { display: inline-block; padding: 12px 24px; border: none; border-radius: 5px; background-color: var(--primary-blue); color: var(--white); font-weight: 500; cursor: pointer; text-decoration: none; text-align: center; transition: background-color 0.3s, transform 0.2s; }
+        .btn:hover { background-color: var(--primary-blue-hover); transform: translateY(-2px); }
+        .btn-danger { background-color: var(--danger-red); }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-success { background-color: var(--success-green); }
+        .btn-success:hover { background-color: #218838; }
         
-        section {
-            padding: 60px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .formGroup { margin-bottom: 20px; }
+        .formGroup label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .formGroup input, .formGroup select, .formGroup textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; font-family: var(--font-family); }
+        textarea { resize: vertical; min-height: 80px; }
 
-        section:last-child {
-            border-bottom: none;
-        }
+        /* --- 5. Xüsusi Bölmə Stilləri --- */
         
-        h1, h2, h3 {
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
+        /* Giriş Ekranı */
+        #loginScreen { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .loginBox { max-width: 500px; }
+        .loginBox .btn { margin: 10px; width: 250px; font-size: 1.2rem; }
 
-        h2 {
-            text-align: center;
-            color: var(--primary-blue);
-        }
-
-        /* 📱 3. Navigation Bar */
-        .navbar {
-            background-color: var(--white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 70px;
-        }
-
-        .navLogo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            text-decoration: none;
-        }
-
-        .navLinks {
-            list-style: none;
-            display: flex;
-            gap: 25px;
-        }
-        
-        .navLinks a {
-            text-decoration: none;
-            color: var(--medium-gray);
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .navLinks a:hover {
-            color: var(--primary-blue);
-        }
-
-        .hamburgerMenu {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .hamburgerMenu .bar {
-            width: 25px;
-            height: 3px;
-            background-color: var(--dark-gray);
-            border-radius: 5px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        /* 🃏 4. Reusable Components (Cards, Buttons, Forms) */
-        .card {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .gridContainer {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            background-color: var(--primary-blue);
-            color: var(--white);
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-blue-hover);
-        }
-
-        .formGroup {
-            margin-bottom: 20px;
-        }
-
-        .formGroup label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .formGroup input[type="text"],
-        .formGroup input[type="email"],
-        .formGroup input[type="date"],
-        .formGroup input[type="time"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-family: var(--font-family);
-        }
-
-        /* 📊 5. Section-Specific Styles */
-
-        /* Dashboard */
-        .statCard {
-            text-align: center;
-        }
-        .statCard h3 {
-            font-size: 2.5rem;
-            color: var(--primary-blue);
-        }
-        .statCard p {
-            font-size: 1rem;
-            color: var(--medium-gray);
-        }
-        .chartPlaceholder {
-            height: 250px;
-            background-color: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            color: var(--medium-gray);
-        }
-        
-        /* Upload Questions */
-        .uploadBox {
-            border: 2px dashed var(--border-color);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            background-color: var(--light-blue);
-            margin-bottom: 20px;
-        }
-        .uploadBox p { color: var(--medium-gray); }
-
-        .questionTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .questionTable th, .questionTable td {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            text-align: left;
-        }
-        .questionTable th {
-            background-color: var(--light-gray);
-        }
-        .btn-edit { background-color: var(--success-green); margin-right: 5px;}
-        .btn-delete { background-color: var(--danger-red); }
-
-        /* Start Exam */
-        .question { margin-bottom: 25px; }
+        /* İmtahan */
+        .question { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .question:last-of-type { border-bottom: none; }
         .question p { font-weight: 600; margin-bottom: 10px; }
         .options-list { list-style: none; }
         .options-list li { margin-bottom: 8px; }
 
-        /* Schedule Lesson */
-        .meetLinkDisplay {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: var(--light-blue);
-            border-left: 4px solid var(--primary-blue);
-            font-weight: 500;
-        }
-        .meetLinkDisplay a { color: var(--primary-blue); }
+        /* Cədvəl Stilləri */
+        .responsiveTable { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .responsiveTable th, .responsiveTable td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
+        .responsiveTable th { background-color: var(--light-gray); font-weight: 600; }
+        .responsiveTable td .btn { padding: 6px 12px; margin-right: 5px; }
 
-        /* Profile */
-        .profileCard {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .profileAvatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: var(--primary-blue);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 600;
-        }
-        .profileInfo h3 { margin-bottom: 5px; }
-        .profileInfo p { color: var(--medium-gray); }
+        /* Modal Pəncərə */
+        .modal { position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .modalContent { background-color: var(--white); margin: auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; position: relative; }
+        .closeButton { color: #aaa; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 20px; }
+        .closeButton:hover, .closeButton:focus { color: var(--dark-gray); text-decoration: none; cursor: pointer; }
 
-        /* 📱 6. Responsive Media Queries */
+        /* --- 6. Responsiv Dizayn --- */
         @media (max-width: 768px) {
-            .navLinks {
-                position: absolute;
-                top: 70px;
-                left: 0;
-                right: 0;
-                flex-direction: column;
-                background-color: var(--white);
-                text-align: center;
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.5s ease-in-out;
-            }
-
-            .navLinks.active {
-                max-height: 500px; /* Allow space for links */
-                padding-bottom: 20px;
-            }
-
-            .navLinks li {
-                padding: 10px 0;
-            }
+            .navLinks { position: absolute; top: 70px; left: 0; right: 0; flex-direction: column; background-color: var(--white); text-align: center; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; box-shadow: var(--shadow); }
+            .navLinks.active { max-height: 500px; padding-bottom: 20px; }
+            .navLinks li { padding: 10px 0; }
+            .hamburgerMenu { display: flex; }
+            .hamburgerMenu.toggle .bar:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+            .hamburgerMenu.toggle .bar:nth-child(2) { opacity: 0; }
+            .hamburgerMenu.toggle .bar:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
             
-            .hamburgerMenu {
-                display: flex;
-            }
-            
-            /* Hamburger animation */
-            .hamburgerMenu.toggle .bar:nth-child(1) {
-                transform: rotate(-45deg) translate(-5px, 6px);
-            }
-            .hamburgerMenu.toggle .bar:nth-child(2) {
-                opacity: 0;
-            }
-            .hamburgerMenu.toggle .bar:nth-child(3) {
-                transform: rotate(45deg) translate(-5px, -6px);
-            }
-
-            main {
-                padding-top: 70px;
-            }
-            
-            section {
-                padding: 40px 0;
-            }
-
-            .profileCard {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .questionTable, .questionTable thead, .questionTable tbody, .questionTable th, .questionTable td, .questionTable tr {
-                display: block;
-            }
-            .questionTable thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-            .questionTable tr {
-                border: 1px solid var(--border-color);
-                margin-bottom: 10px;
-            }
-            .questionTable td {
-                border: none;
-                border-bottom: 1px solid #eee;
-                position: relative;
-                padding-left: 50%;
-            }
-            .questionTable td:before {
-                position: absolute;
-                top: 12px;
-                left: 12px;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
-                font-weight: 600;
-            }
-            /* Labeling the data */
-            .questionTable td:nth-of-type(1):before { content: "Question"; }
-            .questionTable td:nth-of-type(2):before { content: "Type"; }
-            .questionTable td:nth-of-type(3):before { content: "Answer"; }
-            .questionTable td:nth-of-type(4):before { content: "Actions"; }
+            main { padding-top: 70px; }
+            section { padding: 40px 0; }
+            .responsiveTable { border: 0; }
+            .responsiveTable thead { display: none; }
+            .responsiveTable tr { display: block; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
+            .responsiveTable td { display: block; text-align: right; padding-left: 50%; position: relative; border-bottom: 1px solid var(--border-color); }
+            .responsiveTable td:last-child { border-bottom: 0; }
+            .responsiveTable td::before { content: attr(data-label); position: absolute; left: 10px; width: calc(50% - 20px); text-align: left; font-weight: 600; }
         }
     </style>
 </head>
 <body>
 
-    <header class="navbar">
+    <div id="loginScreen">
         <div class="container">
-            <a href="#dashboard" class="navLogo">EduSys Pro</a>
-            <nav>
-                <ul class="navLinks" id="navLinks">
-                    <li><a href="#dashboard">Dashboard</a></li>
-                    <li><a href="#uploadQuestions">Upload Questions</a></li>
-                    <li><a href="#startExam">Start Exam</a></li>
-                    <li><a href="#scheduleLesson">Schedule Lesson</a></li>
-                    <li><a href="#profile">Profile</a></li>
-                </ul>
-            </nav>
-            <div class="hamburgerMenu" id="hamburgerMenu">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
+            <div class="card loginBox">
+                <h1>EduSys Pro'ya Xoş Gəlmisiniz!</h1>
+                <p class="text-muted mb-4">Zəhmət olmasa, sistemə daxil olmaq üçün rolunuzu seçin.</p>
+                <button id="loginAsTeacher" class="btn">👨‍🏫 Müəllim kimi daxil ol</button>
+                <button id="loginAsStudent" class="btn">👨‍🎓 Tələbə kimi daxil ol</button>
             </div>
         </div>
-    </header>
-
-    <main>
-        <section id="dashboard">
+    </div>
+    
+    <div id="appContainer" class="hidden">
+        <header class="navbar">
             <div class="container">
-                <h2>📊 Dashboard</h2>
-                <div class="gridContainer">
-                    <div class="card statCard">
-                        <h3>150</h3>
-                        <p>Total Students</p>
-                    </div>
-                    <div class="card statCard">
-                        <h3>82</h3>
-                        <p>Lessons Scheduled</p>
-                    </div>
-                    <div class="card statCard">
-                        <h3>12</h3>
-                        <p>Upcoming Exams</p>
-                    </div>
-                    <div class="card statCard">
-                        <h3>$7,850</h3>
-                        <p>Total Earnings</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Performance Overview</h3>
-                    <div class="chartPlaceholder">
-                        
-                        <p>Chart Placeholder</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <hr/>
-
-        <section id="uploadQuestions">
-            <div class="container">
-                <h2>🧑‍🏫 Upload & Manage Questions</h2>
-                <div class="card">
-                    <h3>Upload New Questions</h3>
-                    <div class="uploadBox">
-                        <p>Drag & Drop your Word/PDF file here or click to select.</p>
-                    </div>
-                    <p><strong>Accepted Format:</strong><br>
-                    <code>Q: What is 2+2? A) 3 B) 4 * C) 5 TYPE: mcq</code></p>
-                </div>
-
-                <div class="card">
-                    <h3>Question Bank</h3>
-                    <table class="questionTable">
-                        <thead>
-                            <tr>
-                                <th>Question</th>
-                                <th>Type</th>
-                                <th>Correct Answer</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>What is the capital of France?</td>
-                                <td>mcq</td>
-                                <td>Paris</td>
-                                <td><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></td>
-                            </tr>
-                            <tr>
-                                <td>The chemical symbol for water is H2O.</td>
-                                <td>true/false</td>
-                                <td>True</td>
-                                <td><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></td>
-                            </tr>
-                            <tr>
-                                <td>___ is the powerhouse of the cell.</td>
-                                <td>fill-in-blank</td>
-                                <td>Mitochondria</td>
-                                <td><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <hr/>
-
-        <section id="startExam">
-            <div class="container">
-                <h2>👨‍🎓 Start Exam</h2>
-                <div class="card">
-                    <h3>Mid-Term Science Exam</h3>
-                    <form id="examForm">
-                        <div class="question">
-                            <p>1. What is the largest planet in our solar system?</p>
-                            <ul class="options-list">
-                                <li><label><input type="radio" name="q1" value="a"> Earth</label></li>
-                                <li><label><input type="radio" name="q1" value="b"> Mars</label></li>
-                                <li><label><input type="radio" name="q1" value="c"> Jupiter</label></li>
-                                <li><label><input type="radio" name="q1" value="d"> Saturn</label></li>
-                            </ul>
-                        </div>
-
-                        <div class="question">
-                            <p>2. The sun is a star.</p>
-                            <ul class="options-list">
-                                <li><label><input type="radio" name="q2" value="true"> True</label></li>
-                                <li><label><input type="radio" name="q2" value="false"> False</label></li>
-                            </ul>
-                        </div>
-
-                        <div class="question">
-                            <p>3. Photosynthesis is the process used by plants to convert light energy into chemical energy. The primary pigment used is ________.</p>
-                            <div class="formGroup">
-                                <input type="text" name="q3" placeholder="Type your answer here">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn">Submit Exam</button>
-                    </form>
-                </div>
-                 <div class="card">
-                    <h3>Your Progress</h3>
-                    <label for="progress">Assignments Completed: 40%</label>
-                    <progress id="progress" value="40" max="100" style="width: 100%; height: 25px;"> 40% </progress>
-                </div>
-            </div>
-        </section>
-
-        <hr/>
-
-        <section id="scheduleLesson">
-            <div class="container">
-                <h2>📅 Schedule a Lesson</h2>
-                <div class="card">
-                    <h3>Create New Lesson</h3>
-                    <div class="formGroup">
-                        <label for="lessonDate">Date</label>
-                        <input type="date" id="lessonDate">
-                    </div>
-                    <div class="formGroup">
-                        <label for="lessonTime">Time</label>
-                        <input type="time" id="lessonTime">
-                    </div>
-                    <button class="btn" id="createMeetLinkBtn">Create Google Meet Link</button>
-                    <div id="meetLinkDisplay" class="meetLinkDisplay" style="display: none;"></div>
-                </div>
-
-                <div class="card">
-                    <h3>Upcoming Lessons</h3>
-                    <ul class="options-list">
-                        <li><strong>Biology 101:</strong> Sept 5, 2025 @ 10:00 AM - <a href="#">https://meet.google.com/xyz-abcd-pqr</a></li>
-                        <li><strong>Algebra II:</strong> Sept 7, 2025 @ 2:00 PM - <a href="#">https://meet.google.com/lmn-opqr-stu</a></li>
+                <a href="#dashboard" class="navLogo">EduSys Pro</a>
+                <nav>
+                    <ul class="navLinks" id="navLinks">
+                        <li><a href="#dashboard">İdarə Paneli</a></li>
+                        <li class="teacher-only"><a href="#questions">Suallar</a></li>
+                        <li class="student-only"><a href="#startExam">İmtahana Başla</a></li>
+                        <li><a href="#schedule">Dərs Cədvəli</a></li>
+                        <li><a href="#profile">Profil</a></li>
+                        <li><button id="logoutButton">Çıxış</button></li>
                     </ul>
+                </nav>
+                <div class="hamburgerMenu" id="hamburgerMenu">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <hr/>
-
-        <section id="profile">
-            <div class="container">
-                <h2>👤 My Profile</h2>
-                <div class="card profileCard">
-                    <div class="profileAvatar">JD</div>
-                    <div class="profileInfo">
-                        <h3>John Doe</h3>
-                        <p><strong>Role:</strong> Teacher</p>
-                        <p><strong>Email:</strong> john.doe@example.com</p>
-                        <button class="btn" style="margin-top: 10px;">Edit Profile</button>
+        <main>
+            <section id="dashboard">
+                <div class="container">
+                    <h2>📊 İdarə Paneli</h2>
+                    <div class="gridContainer">
+                        <div class="card statCard"><h3>150</h3><p>Ümumi Tələbə</p></div>
+                        <div class="card statCard"><h3>82</h3><p>Planlanan Dərslər</p></div>
+                        <div class="card statCard"><h3>12</h3><p>Qarşıdan Gələn İmtahan</p></div>
+                        <div class="card statCard teacher-only"><h3>$7,850</h3><p>Ümumi Qazanc</p></div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-    </main>
+            <section id="questions" class="teacher-only">
+                <div class="container">
+                    <h2>📝 Sualları İdarə Et</h2>
+                    <div class="card">
+                        <button id="addQuestionBtn" class="btn btn-success">Yeni Sual Əlavə Et</button>
+                        <table class="responsiveTable" id="questionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Sual Mətni</th>
+                                    <th>Növü</th>
+                                    <th>Düzgün Cavab</th>
+                                    <th>Əməliyyatlar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="questionsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="startExam" class="student-only">
+                <div class="container">
+                    <h2>👨‍🎓 İmtahan: Ümumi Elm</h2>
+                    <div class="card" id="examContainer">
+                        </div>
+                     <div class="card" id="examResultCard" class="hidden">
+                        <h3>İmtahan Nəticəsi</h3>
+                        <p id="examScore"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="schedule">
+                <div class="container">
+                    <h2>📅 Dərs Cədvəli</h2>
+                    <div class="card teacher-only">
+                        <h3>Yeni Dərs Yarat</h3>
+                        <form id="addLessonForm">
+                            <div class="formGroup">
+                                <label for="lessonTitle">Dərsin Adı</label>
+                                <input type="text" id="lessonTitle" required>
+                            </div>
+                            <div class="formGroup">
+                                <label for="lessonDate">Tarix və Saat</label>
+                                <input type="datetime-local" id="lessonDate" required>
+                            </div>
+                            <button type="submit" class="btn">Dərs Əlavə Et</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <h3>Qarşıdan Gələn Dərslər</h3>
+                        <div id="lessonsList">
+                            </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="profile">
+                <div class="container">
+                    <h2>👤 Profilim</h2>
+                    <div class="card">
+                        <h3 id="profileName"></h3>
+                        <p><strong>Rol:</strong> <span id="profileRole"></span></p>
+                        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="questionModal" class="modal hidden">
+        <div class="modalContent">
+            <span class="closeButton" id="closeModalBtn">&times;</span>
+            <h3>Yeni Sual Əlavə Et</h3>
+            <form id="questionForm">
+                <div class="formGroup">
+                    <label for="questionText">Sual Mətni</label>
+                    <textarea id="questionText" required></textarea>
+                </div>
+                <div class="formGroup">
+                    <label for="questionType">Sualın Növü</label>
+                    <select id="questionType">
+                        <option value="mcq">Çoxvariantlı (MCQ)</option>
+                        <option value="fill">Boşluq Doldurma</option>
+                    </select>
+                </div>
+                 <div class="formGroup">
+                    <label for="questionAnswers">Cavab Variantları (hər biri yeni sətirdə)</label>
+                    <textarea id="questionAnswers" placeholder="A) Cavab 1&#10;B) Cavab 2&#10;C) Cavab 3"></textarea>
+                </div>
+                <div class="formGroup">
+                    <label for="correctAnswer">Düzgün Cavab</label>
+                    <input type="text" id="correctAnswer" placeholder="Məsələn: C və ya 'düzgün söz'" required>
+                </div>
+                <button type="submit" class="btn">Yadda Saxla</button>
+            </form>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // ================== 1. TƏTBİQİN VƏZİYYƏTİ (STATE MANAGEMENT) ==================
+        let currentUser = null;
+        let questions = [];
+        let lessons = [];
+
+        // --- Elementlərin seçilməsi ---
+        const loginScreen = document.getElementById('loginScreen');
+        const appContainer = document.getElementById('appContainer');
+        const loginAsTeacherBtn = document.getElementById('loginAsTeacher');
+        const loginAsStudentBtn = document.getElementById('loginAsStudent');
+        const logoutButton = document.getElementById('logoutButton');
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        // ================== 2. MƏLUMATLARIN İDARƏ EDİLMƏSİ (LOCALSTORAGE) ==================
+
+        // --- Məlumatları localStorage'dan yükləyən funksiya ---
+        const loadData = () => {
+            const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+            const savedQuestions = JSON.parse(localStorage.getItem('questions'));
+            const savedLessons = JSON.parse(localStorage.getItem('lessons'));
+
+            if (savedQuestions) {
+                questions = savedQuestions;
+            } else {
+                // İlkin nümunə suallar
+                questions = [
+                    { id: 1, text: 'Günəş sistemində ən böyük planet hansıdır?', type: 'mcq', answers: ['Yer', 'Mars', 'Yupiter', 'Saturn'], correctAnswer: 'Yupiter' },
+                    { id: 2, text: 'Hüceyrənin "enerji stansiyası" ___ adlanır.', type: 'fill', answers: [], correctAnswer: 'Mitoxondri' },
+                    { id: 3, text: 'Fransanın paytaxtı haradır?', type: 'mcq', answers: ['Berlin', 'Madrid', 'Paris', 'Roma'], correctAnswer: 'Paris' },
+                ];
+            }
+
+            if (savedLessons) {
+                lessons = savedLessons;
+            } else {
+                 // İlkin nümunə dərslər
+                lessons = [
+                    { id: 1, title: 'Biologiya 101', date: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 2, title: 'Cəbr II', date: new Date(new Date().getTime() + 4 * 24 * 60 * 60 * 1000).toISOString() }
+                ];
+            }
             
-            // 🍔 Mobile Navbar Toggle
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
-            const navLinks = document.getElementById('navLinks');
+            if (savedUser) {
+                currentUser = savedUser;
+                showApp();
+            } else {
+                showLogin();
+            }
+        };
 
-            hamburgerMenu.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                hamburgerMenu.classList.toggle('toggle');
+        // --- Məlumatları localStorage'da saxlamaq ---
+        const saveData = () => {
+            localStorage.setItem('questions', JSON.stringify(questions));
+            localStorage.setItem('lessons', JSON.stringify(lessons));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        };
+        
+        // ================== 3. GÖRÜNÜŞÜN İDARƏ EDİLMƏSİ (UI/RENDER FUNCTIONS) ==================
+
+        const showLogin = () => {
+            loginScreen.classList.remove('hidden');
+            appContainer.classList.add('hidden');
+        };
+
+        const showApp = () => {
+            loginScreen.classList.add('hidden');
+            appContainer.classList.remove('hidden');
+            renderUIForRole();
+            renderAll();
+        };
+
+        // --- Roluna görə interfeysi dəyişən funksiya ---
+        const renderUIForRole = () => {
+            const userRole = currentUser.role;
+            document.querySelectorAll('.teacher-only, .student-only').forEach(el => el.classList.add('hidden'));
+            if (userRole === 'teacher') {
+                document.querySelectorAll('.teacher-only').forEach(el => el.classList.remove('hidden'));
+            } else {
+                document.querySelectorAll('.student-only').forEach(el => el.classList.remove('hidden'));
+            }
+            // Profil məlumatlarını yenilə
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileRole').textContent = userRole === 'teacher' ? 'Müəllim' : 'Tələbə';
+            document.getElementById('profileEmail').textContent = currentUser.email;
+        };
+
+        // --- Bütün dinamik hissələri yenidən render etmək ---
+        const renderAll = () => {
+            if(currentUser.role === 'teacher') renderQuestionsTable();
+            if(currentUser.role === 'student') renderExam();
+            renderLessons();
+        };
+
+        // --- Suallar cədvəlini render etmək ---
+        const renderQuestionsTable = () => {
+            const tableBody = document.getElementById('questionsTableBody');
+            tableBody.innerHTML = '';
+            questions.forEach(q => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td data-label="Sual Mətni">${q.text.substring(0, 50)}...</td>
+                    <td data-label="Növü">${q.type.toUpperCase()}</td>
+                    <td data-label="Düzgün Cavab">${q.correctAnswer}</td>
+                    <td data-label="Əməliyyatlar">
+                        <button class="btn btn-danger" onclick="deleteQuestion(${q.id})">Sil</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
             });
-
-            // Close mobile menu when a link is clicked
-            document.querySelectorAll('.navLinks a').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navLinks.classList.contains('active')) {
-                        navLinks.classList.remove('active');
-                        hamburgerMenu.classList.remove('toggle');
-                    }
-                });
+        };
+        
+        // --- Dərsləri render etmək ---
+        const renderLessons = () => {
+            const listContainer = document.getElementById('lessonsList');
+            listContainer.innerHTML = '';
+            if (lessons.length === 0) {
+                listContainer.innerHTML = '<p>Heç bir dərs planlanmayıb.</p>';
+                return;
+            }
+            lessons
+                .sort((a,b) => new Date(a.date) - new Date(b.date))
+                .forEach(lesson => {
+                const lessonDate = new Date(lesson.date);
+                const formattedDate = `${lessonDate.toLocaleDateString('az-AZ')} @ ${lessonDate.toLocaleTimeString('az-AZ', {hour: '2-digit', minute:'2-digit'})}`;
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.innerHTML = `
+                    <h4>${lesson.title}</h4>
+                    <p>${formattedDate}</p>
+                    ${currentUser.role === 'teacher' ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteLesson(${lesson.id})">Ləğv Et</button>` : ''}
+                `;
+                listContainer.appendChild(item);
             });
-
-            // 📝 Exam Submission Alert
-            const examForm = document.getElementById('examForm');
-            examForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent actual form submission
-                const randomScore = Math.floor(Math.random() * 3) + 8; // Random score between 8 and 10
-                alert(`Exam Submitted! You scored ${randomScore}/10.`);
+        };
+        
+        // --- İmtahanı render etmək ---
+        const renderExam = () => {
+            const examContainer = document.getElementById('examContainer');
+            examContainer.innerHTML = '';
+            const examForm = document.createElement('form');
+            examForm.id = 'examForm';
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                let optionsHTML = '';
+                if (q.type === 'mcq') {
+                    optionsHTML = `<ul class="options-list">`;
+                    q.answers.forEach(answer => {
+                        optionsHTML += `<li><label><input type="radio" name="q${q.id}" value="${answer}" required> ${answer}</label></li>`;
+                    });
+                    optionsHTML += `</ul>`;
+                } else if (q.type === 'fill') {
+                    optionsHTML = `<div class="formGroup"><input type="text" name="q${q.id}" placeholder="Cavabınızı yazın" required></div>`;
+                }
+                questionDiv.innerHTML = `<p>${index + 1}. ${q.text}</p>${optionsHTML}`;
+                examForm.appendChild(questionDiv);
             });
+            
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'btn';
+            submitButton.textContent = 'İmtahanı Bitir';
+            examForm.appendChild(submitButton);
 
-            // 📅 Google Meet Link Generation
-            const createMeetLinkBtn = document.getElementById('createMeetLinkBtn');
-            const meetLinkDisplay = document.getElementById('meetLinkDisplay');
+            examContainer.appendChild(examForm);
+            
+            examForm.addEventListener('submit', submitExam);
+        };
 
-            createMeetLinkBtn.addEventListener('click', () => {
-                // Generate a random string for the meet link
-                const randomString = () => Math.random().toString(36).substring(2, 6);
-                const meetLink = `https://meet.google.com/${randomString()}-${randomString()}-${randomString()}`;
-                
-                meetLinkDisplay.innerHTML = `Link Created: <a href="${meetLink}" target="_blank">${meetLink}</a>`;
-                meetLinkDisplay.style.display = 'block';
-            });
-
+        // ================== 4. FUNKSİONALLIQ VƏ HADİSƏLƏR (EVENT LISTENERS) ==================
+        
+        // --- Giriş düymələri ---
+        loginAsTeacherBtn.addEventListener('click', () => {
+            currentUser = { name: "Aynurə Məmmədova", email: "a.mammadova@edu.az", role: 'teacher' };
+            saveData();
+            showApp();
         });
-    </script>
 
+        loginAsStudentBtn.addEventListener('click', () => {
+            currentUser = { name: "Orxan Əliyev", email: "o.aliyev@edu.az", role: 'student' };
+            saveData();
+            showApp();
+        });
+
+        // --- Çıxış ---
+        logoutButton.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showLogin();
+        });
+
+        // --- Mobil naviqasiya ---
+        hamburgerMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburgerMenu.classList.toggle('toggle');
+        });
+        document.querySelectorAll('.navLinks a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburgerMenu.classList.remove('toggle');
+                }
+            });
+        });
+
+        // --- Sual əlavə etmə modalı ---
+        const modal = document.getElementById('questionModal');
+        document.getElementById('addQuestionBtn').addEventListener('click', () => modal.classList.remove('hidden'));
+        document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.add('hidden'));
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) modal.classList.add('hidden');
+        });
+
+        // --- Sual forması ---
+        document.getElementById('questionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newQuestion = {
+                id: Date.now(),
+                text: document.getElementById('questionText').value,
+                type: document.getElementById('questionType').value,
+                answers: document.getElementById('questionAnswers').value.split('\n').filter(ans => ans.trim() !== ''),
+                correctAnswer: document.getElementById('correctAnswer').value.trim()
+            };
+            questions.push(newQuestion);
+            saveData();
+            renderQuestionsTable();
+            modal.classList.add('hidden');
+            e.target.reset();
+        });
+
+        // --- Dərs əlavə etmə forması ---
+        document.getElementById('addLessonForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newLesson = {
+                id: Date.now(),
+                title: document.getElementById('lessonTitle').value,
+                date: document.getElementById('lessonDate').value
+            };
+            lessons.push(newLesson);
+            saveData();
+            renderLessons();
+            e.target.reset();
+        });
+
+        // --- İmtahanı yoxlamaq ---
+        const submitExam = (e) => {
+            e.preventDefault();
+            let score = 0;
+            const formData = new FormData(e.target);
+
+            for (let [key, value] of formData.entries()) {
+                const questionId = parseInt(key.replace('q', ''));
+                const question = questions.find(q => q.id === questionId);
+                
+                // Düzgün cavabın kiçik/böyük hərfə həssas olmaması üçün
+                if (question && question.correctAnswer.toLowerCase() === value.toLowerCase()) {
+                    score++;
+                }
+            }
+            
+            document.getElementById('examContainer').classList.add('hidden');
+            const resultCard = document.getElementById('examResultCard');
+            document.getElementById('examScore').textContent = `Siz ${questions.length} sualdan ${score} düzgün cavab verdiniz. Nəticəniz: ${((score / questions.length) * 100).toFixed(2)}%`;
+            resultCard.classList.remove('hidden');
+        };
+
+        // ================== 5. QLOBAL FUNKSİYALAR (Pəncərədən çağrıla bilən) ==================
+        // CRUD əməliyyatları üçün funksiyaları qlobal edirik ki, HTML-dən onclick ilə çağırıla bilsin.
+        
+        window.deleteQuestion = (id) => {
+            if(confirm("Bu sualı silmək istədiyinizə əminsiniz?")) {
+                questions = questions.filter(q => q.id !== id);
+                saveData();
+                renderQuestionsTable();
+            }
+        };
+
+        window.deleteLesson = (id) => {
+            if(confirm("Bu dərsi ləğv etmək istədiyinizə əminsiniz?")) {
+                lessons = lessons.filter(l => l.id !== id);
+                saveData();
+                renderLessons();
+            }
+        };
+
+        // --- Tətbiqi Başlatmaq ---
+        loadData();
+    });
+    </script>
 </body>
 </html>
-
