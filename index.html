@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cineflux - Your Universe of Movies</title>
+    <title>Cineflux - Sinema Evreniniz</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,704 +14,372 @@
     <style>
         /* --- CSS STYLES --- */
         
-        /* 1. VARIABLES & RESET */
+        /* 1. DEĞİŞKENLER & SIFIRLAMA */
         :root {
-            --midnight-blue: #0B172A;
+            --midnight-blue: #0A192F;
             --dark-blue: #132039;
             --neon-cyan: #00f7ff;
             --soft-white: #EAF0FF;
             --light-gray: #a8b2d1;
             --shadow-color: rgba(0, 247, 255, 0.1);
+            --error-red: #ff4d4d;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--midnight-blue);
             color: var(--soft-white);
             overflow-x: hidden;
         }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; height: auto; display: block; }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--midnight-blue);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--dark-blue);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-cyan);
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--midnight-blue); }
+        ::-webkit-scrollbar-thumb { background: var(--dark-blue); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
 
-        /* 2. MAIN LAYOUT & HELPERS */
-        .container {
-            width: 90%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background: var(--neon-cyan);
-            color: var(--midnight-blue);
-            border-radius: 5px;
-            font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 247, 255, 0.2);
-        }
-        
-        .section {
-            padding: 60px 0;
-        }
-        
-        .section__title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: var(--soft-white);
-            border-left: 4px solid var(--neon-cyan);
-            padding-left: 1rem;
-        }
-        
-        /* 3. HEADER & NAVIGATION */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 5%;
-            background: rgba(11, 23, 42, 0.7);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            transition: background 0.3s ease;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--neon-cyan);
-        }
-        
-        .logo span {
-            color: var(--soft-white);
-        }
-
-        .nav__list {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav__link {
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav__link:hover {
-            color: var(--neon-cyan);
-        }
-        
-        .nav__user {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .nav__user i {
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-        
-        .nav__user i:hover {
-            color: var(--neon-cyan);
-        }
-        
-        .nav__user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--neon-cyan);
-        }
-        
-        .nav__toggle {
-            display: none; /* Hidden on desktop */
-            font-size: 1.8rem;
-            cursor: pointer;
-        }
-
-        /* 4. HERO SECTION */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(rgba(11, 23, 42, 0.7), var(--midnight-blue)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop') no-repeat center center/cover;
-            position: relative;
-        }
-        
-        .hero__content {
-            max-width: 600px;
-        }
-        
-        .hero__subtitle {
-            font-size: 1.2rem;
-            color: var(--neon-cyan);
-            font-weight: 600;
-        }
-
-        .hero__title {
-            font-size: 3.5rem;
-            line-height: 1.2;
-            margin: 1rem 0 1.5rem;
-        }
-
-        .hero__description {
-            font-size: 1rem;
-            color: var(--light-gray);
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        /* 5. MOVIE CAROUSEL */
-        .carousel {
-            position: relative;
-        }
-        
-        .carousel__slider {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 0;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-cyan) var(--midnight-blue);
-        }
-        
-        .carousel__slider::-webkit-scrollbar {
-            height: 8px;
-        }
-        
-        .carousel__slider::-webkit-scrollbar-thumb {
-            background: var(--dark-blue);
-            border-radius: 10px;
-        }
-        
-        .carousel__slider:hover::-webkit-scrollbar-thumb {
-            background: var(--neon-cyan);
-        }
-
-        .movie-card {
-            flex: 0 0 auto;
-            width: 200px;
-            scroll-snap-align: start;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .movie-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px var(--shadow-color);
-        }
-
-        .movie-card__img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        .movie-card__overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(11, 23, 42, 0.9), transparent);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1rem;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .movie-card:hover .movie-card__overlay {
-            opacity: 1;
-        }
-
-        .movie-card__title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--soft-white);
-        }
-
-        .movie-card__info {
-            font-size: 0.8rem;
-            color: var(--light-gray);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.25rem;
-        }
-
-        .movie-card__info i {
-            color: var(--neon-cyan);
-        }
-        
-        .continue-watching .movie-card__progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 4px;
-            background-color: var(--neon-cyan);
-        }
-
-        /* 6. GENRE/CATEGORY PAGE GRID */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.5rem;
-        }
-
-        /* 7. LOGIN/SIGNUP FORM */
-        .auth-page {
+        /* 2. SAYFA YÖNETİMİ & YARDIMCI SINIFLAR */
+        .page {
+            display: none; /* Varsayılan olarak tüm sayfalar gizli */
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(rgba(11, 23, 42, 0.8), var(--midnight-blue)), url('https://images.unsplash.com/photo-1594904351111-a072f80b1a71?q=80&w=2535&auto=format&fit=crop') no-repeat center center/cover;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        
+        .page.active-page {
+            display: block; /* Sadece aktif sayfa görünür */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container { width: 90%; max-width: 1400px; margin: 0 auto; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 12px 28px; background: var(--neon-cyan); color: var(--midnight-blue);
+            border-radius: 5px; font-weight: 600; transition: all 0.3s ease;
+            border: none; cursor: pointer;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 247, 255, 0.2); }
+        .section { padding: 60px 0; }
+        .section__title {
+            font-size: 2rem; margin-bottom: 2rem; color: var(--soft-white);
+            border-left: 4px solid var(--neon-cyan); padding-left: 1rem;
+        }
+
+        /* 3. HEADER (Yeniden Tasarlandı) */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 1rem 5%; background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(10px); display: flex;
+            justify-content: space-between; align-items: center; z-index: 100;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); }
+        .logo span { color: var(--soft-white); }
+
+        .nav__menu { display: flex; align-items: center; }
+        .nav__list { list-style: none; display: flex; gap: 2rem; }
+        .nav__link { font-weight: 500; transition: color 0.3s ease; }
+        .nav__link:hover { color: var(--neon-cyan); }
+
+        .header__actions { display: flex; align-items: center; gap: 1.5rem; }
+        .header__actions i { font-size: 1.3rem; cursor: pointer; transition: color 0.3s ease; }
+        .header__actions i:hover { color: var(--neon-cyan); }
+
+        .profile__dropdown { position: relative; }
+        .profile__avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-cyan); cursor: pointer; }
+        .dropdown__menu {
+            position: absolute; top: 120%; right: 0;
+            background: var(--dark-blue); border-radius: 5px;
+            width: 150px; list-style: none; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0; visibility: hidden; transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .profile__dropdown:hover .dropdown__menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown__item a { display: block; padding: 0.75rem 1rem; transition: background 0.3s ease; }
+        .dropdown__item a:hover { background: var(--midnight-blue); }
+        .dropdown__item i { margin-right: 0.5rem; }
+
+        .nav__toggle { display: none; font-size: 1.8rem; cursor: pointer; z-index: 101; }
+
+        /* 4. LOGIN SAYFASI */
+        #login-page {
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(10, 25, 47, 0.8), var(--midnight-blue)), url('https://images.unsplash.com/photo-1594904351111-a072f80b1a71?q=80&w=2535&auto=format&fit=crop') no-repeat center center/cover;
+        }
         .auth-form {
-            background: var(--dark-blue);
-            padding: 2.5rem;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
+            background: rgba(19, 32, 57, 0.9); padding: 2.5rem; border-radius: 10px;
+            width: 100%; max-width: 400px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             border: 1px solid rgba(0, 247, 255, 0.1);
         }
-        
-        .auth-form__title {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            color: var(--neon-cyan);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
+        .auth-form__title { text-align: center; margin-bottom: 2rem; font-size: 2rem; color: var(--neon-cyan); }
+        .form-group { margin-bottom: 1.5rem; }
         .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            background: var(--midnight-blue);
-            border: 1px solid var(--dark-blue);
-            border-radius: 5px;
-            color: var(--soft-white);
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            width: 100%; padding: 12px 15px; background: var(--midnight-blue);
+            border: 1px solid var(--dark-blue); border-radius: 5px;
+            color: var(--soft-white); font-size: 1rem; transition: border-color 0.3s ease;
         }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--neon-cyan);
-        }
+        .form-group input:focus { outline: none; border-color: var(--neon-cyan); }
+        .auth-form .btn { width: 100%; font-size: 1.1rem; justify-content: center; }
+        .error-message { color: var(--error-red); text-align: center; margin-top: 1rem; font-size: 0.9rem; display: none; }
 
-        .auth-form .btn {
-            width: 100%;
-            font-size: 1.1rem;
+        /* 5. ANA SAYFA: HERO & CAROUSEL */
+        #home-page { padding-top: 80px; } /* Header boşluğu */
+        .hero {
+            height: calc(100vh - 80px); display: flex; align-items: center;
+            background: linear-gradient(to right, rgba(10, 25, 47, 0.9) 30%, transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop') no-repeat center center/cover;
+            position: relative;
         }
-        
-        .auth-form__switch {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: var(--light-gray);
-        }
-        
-        .auth-form__switch a {
-            color: var(--neon-cyan);
-            font-weight: 600;
-        }
+        .hero__content { max-width: 600px; }
+        .hero__subtitle { font-size: 1.2rem; color: var(--neon-cyan); font-weight: 600; }
+        .hero__title { font-size: 3.5rem; line-height: 1.2; margin: 1rem 0 1.5rem; }
+        .hero__description { font-size: 1rem; color: var(--light-gray); margin-bottom: 2rem; line-height: 1.7; }
 
-        /* 8. FOOTER */
-        .footer {
-            background: var(--dark-blue);
-            padding: 3rem 0;
-            text-align: center;
-            border-top: 1px solid rgba(0, 247, 255, 0.1);
+        .carousel__slider {
+            display: flex; gap: 1rem; padding: 1rem 0.5rem;
+            overflow-x: auto; scroll-snap-type: x mandatory;
         }
-        
-        .footer__social {
-            display: flex;
-            justify-content: center;
+        .movie-card {
+            flex: 0 0 auto; width: 200px; scroll-snap-align: start;
+            border-radius: 8px; overflow: hidden; position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; background: var(--dark-blue);
+        }
+        .movie-card:hover { transform: scale(1.05); box-shadow: 0 10px 20px var(--shadow-color); }
+        .movie-card__img { width: 100%; height: 300px; object-fit: cover; }
+        .movie-card__overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(11, 23, 42, 0.9), transparent 60%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 1rem; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .movie-card:hover .movie-card__overlay { opacity: 1; }
+        .movie-card__play-icon { font-size: 4rem; color: var(--soft-white); }
+
+        /* 6. FİLM DETAY SAYFASI */
+        #movie-detail-page { padding: 120px 0 60px; }
+        .detail-container {
+            max-width: 1200px; margin: 0 auto; width: 90%;
+            display: flex; flex-direction: column; gap: 2rem;
+        }
+        .video-player-wrapper {
+            position: relative; padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000; border-radius: 10px; overflow: hidden;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+        }
+        .video-player-wrapper iframe {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        #detail-title { font-size: 2.5rem; color: var(--neon-cyan); }
+        #detail-description { color: var(--light-gray); line-height: 1.8; max-width: 800px; }
+
+        /* 7. PROFİL SAYFASI */
+        #profile-page { padding: 120px 0 60px; }
+        .profile-header {
+            display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem;
+        }
+        .profile-avatar-large {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 4px solid var(--neon-cyan);
+        }
+        .profile-info h1 { font-size: 2.5rem; }
+        .profile-info p { color: var(--light-gray); }
+        .category-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
         }
         
-        .footer__social a {
-            font-size: 1.5rem;
-            color: var(--light-gray);
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-        
-        .footer__social a:hover {
-            color: var(--neon-cyan);
-            transform: translateY(-3px);
-        }
-
-        .footer__links {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        
-        .footer__copyright {
-            color: var(--light-gray);
-            font-size: 0.9rem;
-        }
-
-        /* 9. RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-            .nav__list {
-                gap: 1.5rem;
-            }
-            .hero__title {
-                font-size: 3rem;
-            }
-        }
-        
+        /* 8. RESPONSIVE TASARIM */
         @media (max-width: 768px) {
-            .nav__menu {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 60%;
-                height: 100vh;
-                background: var(--dark-blue);
-                padding-top: 6rem;
-                transition: right 0.4s ease;
+            .nav__list {
+                position: fixed; top: 0; right: -100%;
+                width: 70%; height: 100vh; background: var(--dark-blue);
+                flex-direction: column; justify-content: center; align-items: center;
+                gap: 2.5rem; transition: right 0.4s ease-in-out;
                 box-shadow: -10px 0 20px rgba(0,0,0,0.2);
             }
-            
-            .nav__menu.show-menu {
-                right: 0;
-            }
-            
-            .nav__list {
-                flex-direction: column;
-                align-items: center;
-                gap: 2.5rem;
-            }
-            
-            .nav__toggle {
-                display: block;
-                z-index: 101; /* Above the menu */
-            }
-            
-            .hero {
-                text-align: center;
-                justify-content: center;
-            }
-            
-            .hero__content {
-                padding: 0 1rem;
-            }
-            
-            .hero__title {
-                font-size: 2.5rem;
-            }
-
-            .section__title {
-                font-size: 1.8rem;
-            }
+            .nav__list.show-menu { right: 0; }
+            .nav__toggle { display: block; }
+            .header__actions { gap: 1rem; }
+            .hero { text-align: center; justify-content: center; }
+            .hero__content { padding: 0 1rem; }
+            .hero__title { font-size: 2.5rem; }
+            .section__title, #detail-title, .profile-info h1 { font-size: 1.8rem; }
+            .profile-header { flex-direction: column; text-align: center; }
         }
-        
-        @media (max-width: 480px) {
-            .container {
-                width: 95%;
-            }
-            .movie-card {
-                width: 160px;
-            }
-            .movie-card__img {
-                height: 240px;
-            }
-            
-            .category-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 1rem;
-            }
-        }
-
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <a href="#" class="logo">Cine<span>flux</span></a>
-        
-        <nav class="nav">
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                    <li><a href="#" class="nav__link">Home</a></li>
-                    <li><a href="#" class="nav__link">Series</a></li>
-                    <li><a href="#" class="nav__link">Movies</a></li>
-                    <li><a href="#" class="nav__link">My List</a></li>
-                </ul>
-            </div>
-            
-            <div class="nav__user">
-                <i class="ri-search-line"></i>
-                <i class="ri-notification-3-line"></i>
-                <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="nav__user-avatar">
-            </div>
-
-            <div class="nav__toggle" id="nav-toggle">
-                <i class="ri-menu-line"></i>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero__content">
-                    <p class="hero__subtitle">New Release</p>
-                    <h1 class="hero__title">The Quantum Rift</h1>
-                    <p class="hero__description">
-                        A brilliant physicist discovers a way to fold spacetime, but her creation unleashes a cosmic threat that could unravel reality itself. Now, she must race against time to close the rift she opened.
-                    </p>
-                    <a href="#" class="btn"><i class="ri-play-fill"></i> Watch Now</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <h2 class="section__title">Continue Watching</h2>
-            <div class="carousel">
-                <div class="carousel__slider continue-watching">
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1627871637578-831495c6f242?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                            <h3 class="movie-card__title">Cybernetic Dawn</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>8.9</span>
-                            </div>
-                        </div>
-                        <div class="movie-card__progress" style="width: 75%;"></div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?q=80&w=2070&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Retrograde</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>9.1</span>
-                            </div>
-                        </div>
-                        <div class="movie-card__progress" style="width: 40%;"></div>
-                    </div>
-                    </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <h2 class="section__title">Trending Now</h2>
-            <div class="carousel">
-                <div class="carousel__slider">
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=2070&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Echoes of Mars</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>8.5</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e4472745a?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">The Void Walker</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>9.2</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1585951237313-1b05e219a13e?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Project Chimera</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>8.7</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1574681357558-139392823158?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Neon Ghosts</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>9.0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Zero Kelvin</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>8.3</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1517511620942-195ae32bde17?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                        <div class="movie-card__overlay">
-                             <h3 class="movie-card__title">Final Frontier</h3>
-                            <div class="movie-card__info">
-                                <i class="ri-star-fill"></i><span>8.8</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <h2 class="section__title">Sci-Fi & Fantasy</h2>
-            <div class="category-grid">
-                <div class="movie-card">
-                    <img src="https://images.unsplash.com/photo-1611348524794-5553c54a4bcc?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                    <div class="movie-card__overlay">
-                        <h3 class="movie-card__title">Star Gazer</h3>
-                    </div>
-                </div>
-                <div class="movie-card">
-                    <img src="https://images.unsplash.com/photo-1518063319835-90f5c15f9b48?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                    <div class="movie-card__overlay">
-                        <h3 class="movie-card__title">The Last City</h3>
-                    </div>
-                </div>
-                 <div class="movie-card">
-                    <img src="https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=2069&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                    <div class="movie-card__overlay">
-                        <h3 class="movie-card__title">Time Bender</h3>
-                    </div>
-                </div>
-                <div class="movie-card">
-                    <img src="https://images.unsplash.com/photo-1552069335-a7ba538185c7?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                    <div class="movie-card__overlay">
-                        <h3 class="movie-card__title">Orbital</h3>
-                    </div>
-                </div>
-                <div class="movie-card">
-                    <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
-                    <div class="movie-card__overlay">
-                        <h3 class="movie-card__title">The Enigma</h3>
-                    </div>
-                </div>
-                </div>
-        </section>
-
-        <section class="auth-page">
-            <form class="auth-form">
-                <h2 class="auth-form__title">Welcome Back</h2>
+    <div id="login-page" class="page">
+        <div class="auth-form">
+            <h2 class="auth-form__title">Cineflux'a Giriş Yap</h2>
+            <form id="login-form">
                 <div class="form-group">
-                    <input type="email" placeholder="Email Address" required>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı (admin)" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Şifre (admin)" required>
                 </div>
-                <button type="submit" class="btn">Sign In</button>
-                <p class="auth-form__switch">
-                    New to Cineflux? <a href="#">Sign up now</a>.
-                </p>
+                <button type="submit" class="btn">Giriş Yap</button>
+                <p class="error-message" id="error-message">Hatalı kullanıcı adı veya şifre.</p>
             </form>
-        </section>
-        
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__social">
-                <a href="#"><i class="ri-facebook-circle-fill"></i></a>
-                <a href="#"><i class="ri-twitter-x-line"></i></a>
-                <a href="#"><i class="ri-instagram-line"></i></a>
-                <a href="#"><i class="ri-youtube-fill"></i></a>
-            </div>
-            <ul class="footer__links">
-                <li><a href="#" class="footer__link">FAQ</a></li>
-                <li><a href="#" class="footer__link">Help Center</a></li>
-                <li><a href="#" class="footer__link">Terms of Use</a></li>
-                <li><a href="#" class="footer__link">Privacy</a></li>
-                <li><a href="#" class="footer__link">Contact Us</a></li>
-            </ul>
-            <p class="footer__copyright">
-                &copy; 2025 Cineflux. All Rights Reserved. A concept design.
-            </p>
         </div>
-    </footer>
+    </div>
+
+    <div id="home-page" class="page">
+        <header class="header">
+            <a href="#" class="logo" onclick="navigateTo('home-page')">Cine<span>flux</span></a>
+            <nav class="nav">
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li><a href="#" class="nav__link" onclick="navigateTo('home-page')">Ana Sayfa</a></li>
+                        <li><a href="#" class="nav__link">Diziler</a></li>
+                        <li><a href="#" class="nav__link">Filmler</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="header__actions">
+                <i class="ri-search-line"></i>
+                <div class="profile__dropdown">
+                    <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="profile__avatar">
+                    <ul class="dropdown__menu">
+                        <li class="dropdown__item"><a href="#" onclick="navigateTo('profile-page')"><i class="ri-user-line"></i>Profil</a></li>
+                        <li class="dropdown__item"><a href="#" id="logout-btn"><i class="ri-logout-box-r-line"></i>Çıkış Yap</a></li>
+                    </ul>
+                </div>
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="ri-menu-line"></i>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="container">
+                    <div class="hero__content">
+                        <p class="hero__subtitle">Yeni Sezon</p>
+                        <h1 class="hero__title">The Quantum Rift</h1>
+                        <p class="hero__description">
+                            Gerçekliğin dokusunu çözen kozmik bir tehdidi durdurmak için zamana karşı yarışan bir fizikçinin hikayesi.
+                        </p>
+                        <a href="#" class="btn watch-now-btn" 
+                           data-title="The Quantum Rift"
+                           data-description="Gerçekliğin dokusunu çözen kozmik bir tehdidi durdurmak için zamana karşı yarışan bir fizikçinin hikayesi."
+                           data-video-id="hA2t4Q_fFaU">
+                           <i class="ri-play-fill"></i> Şimdi İzle
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section container">
+                <h2 class="section__title">Gündemdekiler</h2>
+                <div class="carousel__slider">
+                    <div class="movie-card watch-now-btn" data-title="Neon Hayaletler" data-description="Siberpunk bir metropolde, bir dedektif dijital bilinç hırsızlığını araştırır." data-video-id="g4Hbz2jLxvQ">
+                        <img src="https://images.unsplash.com/photo-1574681357558-139392823158?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
+                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
+                    </div>
+                     <div class="movie-card watch-now-btn" data-title="Mars'ın Yankıları" data-description="Kızıl gezegendeki ilk koloni, hayatta kalmalarını tehdit eden gizemli bir sinyal keşfeder." data-video-id="QLv_u_2WSaE">
+                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
+                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
+                    </div>
+                     <div class="movie-card watch-now-btn" data-title="Boşluk Gezgini" data-description="Evrenin uzak köşelerine seyahat eden yalnız bir astronot, insanlığın kökenine dair bir sır bulur." data-video-id="zSgiXGELjbc">
+                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e4472745a?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
+                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
+                    </div>
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="movie-detail-page" class="page">
+        <div class="detail-container">
+            <a href="#" class="btn" onclick="navigateTo('home-page')"><i class="ri-arrow-left-line"></i> Geri Dön</a>
+            <div class="video-player-wrapper">
+                <iframe id="video-player" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div>
+                <h1 id="detail-title">Film Başlığı</h1>
+                <p id="detail-description">Film açıklaması buraya gelecek.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="profile-page" class="page">
+        <div class="container">
+            <a href="#" class="btn" style="margin-bottom: 2rem;" onclick="navigateTo('home-page')"><i class="ri-arrow-left-line"></i> Ana Sayfaya Dön</a>
+             <div class="profile-header">
+                <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="profile-avatar-large">
+                <div class="profile-info">
+                    <h1>Admin</h1>
+                    <p>Cineflux Premium Üyesi</p>
+                </div>
+            </div>
+
+            <section class="section">
+                 <h2 class="section__title">İzleme Listem</h2>
+                <div class="category-grid">
+                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1611348524794-5553c54a4bcc?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
+                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1518063319835-90f5c15f9b48?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
+                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elementleri ---
+            const pages = document.querySelectorAll('.page');
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorMessage = document.getElementById('error-message');
+            const logoutBtn = document.getElementById('logout-btn');
             const navMenu = document.getElementById('nav-menu');
             const navToggle = document.getElementById('nav-toggle');
-            const navClose = document.getElementById('nav-close'); // Assuming you'd have a close button inside the menu
+            const watchNowButtons = document.querySelectorAll('.watch-now-btn');
 
-            // Show menu
+            // --- Sayfa Yönlendirme Fonksiyonu ---
+            window.navigateTo = (pageId) => {
+                // Önce tüm sayfaları gizle
+                pages.forEach(page => page.classList.remove('active-page'));
+                // İstenen sayfayı göster
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active-page');
+                }
+                window.scrollTo(0, 0); // Sayfa değişince en üste git
+            };
+
+            // --- Oturum Kontrolü ve Başlangıç ---
+            const checkLoginStatus = () => {
+                if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                    navigateTo('home-page');
+                } else {
+                    navigateTo('login-page');
+                }
+            };
+            
+            // --- Mobil Menü İşlevselliği ---
             if (navToggle) {
                 navToggle.addEventListener('click', () => {
                     navMenu.classList.toggle('show-menu');
-                    // Change icon to 'close' when menu is open
-                    navToggle.innerHTML = navMenu.classList.contains('show-menu') 
-                        ? '<i class="ri-close-line"></i>' 
+                    navToggle.innerHTML = navMenu.classList.contains('show-menu')
+                        ? '<i class="ri-close-line"></i>'
                         : '<i class="ri-menu-line"></i>';
                 });
             }
-
-            // Optional: Close menu when a link is clicked
-            const navLinks = document.querySelectorAll('.nav__link');
-            navLinks.forEach(link => {
+            document.querySelectorAll('.nav__link').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('show-menu')) {
                         navMenu.classList.remove('show-menu');
@@ -720,15 +388,54 @@
                 });
             });
 
-            // Change header background on scroll
-            window.addEventListener('scroll', () => {
-                const header = document.querySelector('.header');
-                if (window.scrollY >= 50) {
-                    header.style.background = 'rgba(11, 23, 42, 0.9)';
-                } else {
-                    header.style.background = 'rgba(11, 23, 42, 0.7)';
-                }
+            // --- Giriş (Login) İşlemi ---
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (usernameInput.value === 'admin' && passwordInput.value === 'admin') {
+                        sessionStorage.setItem('isLoggedIn', 'true');
+                        errorMessage.style.display = 'none';
+                        navigateTo('home-page');
+                    } else {
+                        errorMessage.style.display = 'block';
+                    }
+                });
+            }
+
+            // --- Çıkış (Logout) İşlemi ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem('isLoggedIn');
+                    navigateTo('login-page');
+                });
+            }
+
+            // --- "İzle" Butonlarına Tıklama Olayı ---
+            watchNowButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Oturum kontrolü
+                    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+                       navigateTo('login-page');
+                       return;
+                    }
+
+                    const title = button.dataset.title;
+                    const description = button.dataset.description;
+                    const videoId = button.dataset.videoId;
+
+                    document.getElementById('detail-title').textContent = title;
+                    document.getElementById('detail-description').textContent = description;
+                    document.getElementById('video-player').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+
+                    navigateTo('movie-detail-page');
+                });
             });
+
+            // Sayfa ilk yüklendiğinde oturum durumunu kontrol et
+            checkLoginStatus();
         });
     </script>
 </body>
