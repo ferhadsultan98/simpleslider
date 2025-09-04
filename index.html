@@ -1,442 +1,967 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cineflux - Sinema Evreniniz</title>
+    <title>Aura - Modern Clothing Store</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
-
     <style>
-        /* --- CSS STYLES --- */
+        /* CSS RESET & FONT IMPORT */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
-        /* 1. DEĞİŞKENLER & SIFIRLAMA */
         :root {
-            --midnight-blue: #0A192F;
-            --dark-blue: #132039;
-            --neon-cyan: #00f7ff;
-            --soft-white: #EAF0FF;
-            --light-gray: #a8b2d1;
-            --shadow-color: rgba(0, 247, 255, 0.1);
-            --error-red: #ff4d4d;
+            --font-family: 'Poppins', sans-serif;
+            
+            /* Light Mode Variables */
+            --primary-color: #6a5af9;
+            --primary-color-light: #f0eefd;
+            --secondary-color: #1e293b;
+            --text-color: #334155;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --header-bg: rgba(255, 255, 255, 0.8);
+
+            /* Common Variables */
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --border-radius: 0.5rem;
+            --transition-speed: 0.3s;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        /* Dark Mode Variables */
+        html.dark {
+            --primary-color: #8b7efb;
+            --primary-color-light: #3a327a;
+            --secondary-color: #f8fafc;
+            --text-color: #cbd5e1;
+            --background-color: #0f172a;
+            --card-background: #1e293b;
+            --border-color: #334155;
+            --header-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--midnight-blue);
-            color: var(--soft-white);
-            overflow-x: hidden;
-        }
-        a { text-decoration: none; color: inherit; }
-        img { max-width: 100%; height: auto; display: block; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--midnight-blue); }
-        ::-webkit-scrollbar-thumb { background: var(--dark-blue); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
-
-        /* 2. SAYFA YÖNETİMİ & YARDIMCI SINIFLAR */
-        .page {
-            display: none; /* Varsayılan olarak tüm sayfalar gizli */
-            min-height: 100vh;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .page.active-page {
-            display: block; /* Sadece aktif sayfa görünür */
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        .container { width: 90%; max-width: 1400px; margin: 0 auto; }
+        /* GENERAL & UTILITY CLASSES */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .hidden { display: none !important; }
         .btn {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            padding: 12px 28px; background: var(--neon-cyan); color: var(--midnight-blue);
-            border-radius: 5px; font-weight: 600; transition: all 0.3s ease;
-            border: none; cursor: pointer;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 247, 255, 0.2); }
-        .section { padding: 60px 0; }
-        .section__title {
-            font-size: 2rem; margin-bottom: 2rem; color: var(--soft-white);
-            border-left: 4px solid var(--neon-cyan); padding-left: 1rem;
-        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #5548d9; transform: translateY(-2px); }
+        .btn-secondary { background-color: var(--card-background); color: var(--secondary-color); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: var(--primary-color-light); }
+        .section { padding: 4rem 0; }
+        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 2rem; color: var(--secondary-color); }
+        .grid { display: grid; gap: 1.5rem; }
 
-        /* 3. HEADER (Yeniden Tasarlandı) */
+        /* HEADER & NAVIGATION */
         .header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            padding: 1rem 5%; background: rgba(10, 25, 47, 0.8);
-            backdrop-filter: blur(10px); display: flex;
-            justify-content: space-between; align-items: center; z-index: 100;
-            border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color var(--transition-speed);
         }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); }
-        .logo span { color: var(--soft-white); }
-
-        .nav__menu { display: flex; align-items: center; }
-        .nav__list { list-style: none; display: flex; gap: 2rem; }
-        .nav__link { font-weight: 500; transition: color 0.3s ease; }
-        .nav__link:hover { color: var(--neon-cyan); }
-
-        .header__actions { display: flex; align-items: center; gap: 1.5rem; }
-        .header__actions i { font-size: 1.3rem; cursor: pointer; transition: color 0.3s ease; }
-        .header__actions i:hover { color: var(--neon-cyan); }
-
-        .profile__dropdown { position: relative; }
-        .profile__avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-cyan); cursor: pointer; }
-        .dropdown__menu {
-            position: absolute; top: 120%; right: 0;
-            background: var(--dark-blue); border-radius: 5px;
-            width: 150px; list-style: none; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            opacity: 0; visibility: hidden; transform: translateY(10px);
-            transition: all 0.3s ease;
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 5rem;
         }
-        .profile__dropdown:hover .dropdown__menu { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown__item a { display: block; padding: 0.75rem 1rem; transition: background 0.3s ease; }
-        .dropdown__item a:hover { background: var(--midnight-blue); }
-        .dropdown__item i { margin-right: 0.5rem; }
-
-        .nav__toggle { display: none; font-size: 1.8rem; cursor: pointer; z-index: 101; }
-
-        /* 4. LOGIN SAYFASI */
-        #login-page {
-            display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(rgba(10, 25, 47, 0.8), var(--midnight-blue)), url('https://images.unsplash.com/photo-1594904351111-a072f80b1a71?q=80&w=2535&auto=format&fit=crop') no-repeat center center/cover;
+        .nav-logo { font-size: 1.75rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .nav-menu { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-list { display: flex; list-style: none; gap: 2rem; }
+        .nav-link { text-decoration: none; color: var(--text-color); font-weight: 500; transition: color var(--transition-speed); }
+        .nav-link:hover, .nav-link.active { color: var(--primary-color); }
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+        .nav-icon { font-size: 1.25rem; cursor: pointer; color: var(--secondary-color); position: relative; }
+        .cart-count {
+            position: absolute;
+            top: -5px; right: -8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
         }
-        .auth-form {
-            background: rgba(19, 32, 57, 0.9); padding: 2.5rem; border-radius: 10px;
-            width: 100%; max-width: 400px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(0, 247, 255, 0.1);
-        }
-        .auth-form__title { text-align: center; margin-bottom: 2rem; font-size: 2rem; color: var(--neon-cyan); }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group input {
-            width: 100%; padding: 12px 15px; background: var(--midnight-blue);
-            border: 1px solid var(--dark-blue); border-radius: 5px;
-            color: var(--soft-white); font-size: 1rem; transition: border-color 0.3s ease;
-        }
-        .form-group input:focus { outline: none; border-color: var(--neon-cyan); }
-        .auth-form .btn { width: 100%; font-size: 1.1rem; justify-content: center; }
-        .error-message { color: var(--error-red); text-align: center; margin-top: 1rem; font-size: 0.9rem; display: none; }
+        .nav-toggle, .nav-close { display: none; }
+        #theme-toggle-button { background: none; border: none; cursor: pointer; }
 
-        /* 5. ANA SAYFA: HERO & CAROUSEL */
-        #home-page { padding-top: 80px; } /* Header boşluğu */
+        /* HERO SECTION */
         .hero {
-            height: calc(100vh - 80px); display: flex; align-items: center;
-            background: linear-gradient(to right, rgba(10, 25, 47, 0.9) 30%, transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop') no-repeat center center/cover;
-            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            min-height: calc(100vh - 5rem);
+            gap: 2rem;
         }
-        .hero__content { max-width: 600px; }
-        .hero__subtitle { font-size: 1.2rem; color: var(--neon-cyan); font-weight: 600; }
-        .hero__title { font-size: 3.5rem; line-height: 1.2; margin: 1rem 0 1.5rem; }
-        .hero__description { font-size: 1rem; color: var(--light-gray); margin-bottom: 2rem; line-height: 1.7; }
-
-        .carousel__slider {
-            display: flex; gap: 1rem; padding: 1rem 0.5rem;
-            overflow-x: auto; scroll-snap-type: x mandatory;
-        }
-        .movie-card {
-            flex: 0 0 auto; width: 200px; scroll-snap-align: start;
-            border-radius: 8px; overflow: hidden; position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer; background: var(--dark-blue);
-        }
-        .movie-card:hover { transform: scale(1.05); box-shadow: 0 10px 20px var(--shadow-color); }
-        .movie-card__img { width: 100%; height: 300px; object-fit: cover; }
-        .movie-card__overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(11, 23, 42, 0.9), transparent 60%);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 1rem; opacity: 0; transition: opacity 0.4s ease;
-        }
-        .movie-card:hover .movie-card__overlay { opacity: 1; }
-        .movie-card__play-icon { font-size: 4rem; color: var(--soft-white); }
-
-        /* 6. FİLM DETAY SAYFASI */
-        #movie-detail-page { padding: 120px 0 60px; }
-        .detail-container {
-            max-width: 1200px; margin: 0 auto; width: 90%;
-            display: flex; flex-direction: column; gap: 2rem;
-        }
-        .video-player-wrapper {
-            position: relative; padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background: #000; border-radius: 10px; overflow: hidden;
-            border: 1px solid rgba(0, 247, 255, 0.2);
-        }
-        .video-player-wrapper iframe {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
-        #detail-title { font-size: 2.5rem; color: var(--neon-cyan); }
-        #detail-description { color: var(--light-gray); line-height: 1.8; max-width: 800px; }
-
-        /* 7. PROFİL SAYFASI */
-        #profile-page { padding: 120px 0 60px; }
-        .profile-header {
-            display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem;
-        }
-        .profile-avatar-large {
-            width: 150px; height: 150px; border-radius: 50%;
-            border: 4px solid var(--neon-cyan);
-        }
-        .profile-info h1 { font-size: 2.5rem; }
-        .profile-info p { color: var(--light-gray); }
-        .category-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.5rem;
+        .hero-content { padding-right: 2rem; }
+        .hero-title { font-size: 3.5rem; color: var(--secondary-color); line-height: 1.2; margin-bottom: 1rem; }
+        .hero-description { font-size: 1.1rem; margin-bottom: 2rem; }
+        .hero-image {
+            background: url('https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            height: 70vh;
+            border-radius: var(--border-radius);
         }
         
-        /* 8. RESPONSIVE TASARIM */
+        /* FEATURED PRODUCTS */
+        .featured-products-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+        /* SHOP PAGE */
+        .shop-container { display: grid; grid-template-columns: 250px 1fr; gap: 2rem; }
+        .filters { padding: 1.5rem; background-color: var(--card-background); border-radius: var(--border-radius); box-shadow: var(--shadow); height: fit-content; }
+        .filter-group { margin-bottom: 1.5rem; }
+        .filter-group h3 { margin-bottom: 1rem; color: var(--secondary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .filter-group ul { list-style: none; }
+        .filter-group ul li button { background: none; border: none; color: var(--text-color); cursor: pointer; padding: 0.5rem; display: block; width: 100%; text-align: left; border-radius: 5px; }
+        .filter-group ul li button:hover, .filter-group ul li button.active { background-color: var(--primary-color-light); color: var(--primary-color); font-weight: 600; }
+        .product-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        #sort-options { width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 5px; background: var(--card-background); color: var(--text-color); }
+        .search-bar { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: 1rem; font-size: 1rem; }
+
+        /* PRODUCT CARD */
+        .product-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .product-image { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
+        .product-info { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-name { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color); margin-bottom: 0.5rem; }
+        .product-price { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); margin-bottom: auto; padding-bottom: 1rem; }
+        .product-rating { margin-bottom: 0.5rem; }
+        .product-rating svg { fill: #f59e0b; width: 16px; height: 16px; }
+
+        /* MODALS (Product Detail, Cart, Auth) */
+        .modal {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed), visibility var(--transition-speed);
+        }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform var(--transition-speed);
+        }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; cursor: pointer; color: var(--secondary-color); background: none; border: none; }
+        
+        /* Product Detail Modal */
+        #product-detail-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+        #detail-image { width: 100%; border-radius: var(--border-radius); }
+        #detail-name { font-size: 2rem; color: var(--secondary-color); }
+        #detail-price { font-size: 1.5rem; color: var(--primary-color); margin: 1rem 0; }
+        #detail-description { margin-bottom: 1rem; }
+        .detail-options { margin-bottom: 1.5rem; }
+        .detail-options label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+        .detail-options select { width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid var(--border-color); }
+
+        /* Cart Modal */
+        #cart-modal .modal-content { max-width: 500px; }
+        #cart-items-container { max-height: 40vh; overflow-y: auto; margin-bottom: 1rem; }
+        .cart-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-name { font-weight: 600; }
+        .cart-item-price { color: var(--primary-color); }
+        .cart-item-quantity { width: 50px; }
+        .cart-totals { margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+        .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        
+        /* Auth Modals */
+        .auth-form { display: flex; flex-direction: column; gap: 1rem; }
+        .auth-form input { padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; }
+        .form-switch { text-align: center; margin-top: 1rem; }
+        .form-switch a { color: var(--primary-color); text-decoration: none; cursor: pointer; }
+
+        /* CHECKOUT PAGE */
+        .checkout-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 5px; }
+        .order-summary { background-color: var(--card-background); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+
+        /* FOOTER */
+        .footer { background-color: var(--card-background); padding: 3rem 0; border-top: 1px solid var(--border-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .footer-col h4 { font-size: 1.2rem; color: var(--secondary-color); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.5rem; }
+        .footer-col a { color: var(--text-color); text-decoration: none; transition: color var(--transition-speed); }
+        .footer-col a:hover { color: var(--primary-color); }
+        .social-icons a { margin-right: 1rem; font-size: 1.5rem; }
+        .newsletter-form { display: flex; margin-top: 1rem; }
+        .newsletter-form input { flex-grow: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 5px 0 0 5px; }
+        .newsletter-form button { border-radius: 0 5px 5px 0; }
+        .footer-bottom { text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem; }
+        
+        /* LOADER & TOAST */
+        .loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        html.dark .loader-wrapper { background-color: rgba(15, 23, 42, 0.7); }
+        .loader {
+            border: 5px solid var(--primary-color-light);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .toast-notification {
+            position: fixed; bottom: 20px; right: 20px;
+            background-color: var(--secondary-color); color: white;
+            padding: 1rem 1.5rem; border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1002;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast-notification.show { opacity: 1; transform: translateY(0); }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-content { padding-right: 0; }
+            .hero-image { height: 50vh; }
+            .shop-container { grid-template-columns: 1fr; }
+            .filters { display: none; /* Will be handled by a mobile filter button */ }
+            #product-detail-content { grid-template-columns: 1fr; }
+            .checkout-container { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 768px) {
-            .nav__list {
-                position: fixed; top: 0; right: -100%;
-                width: 70%; height: 100vh; background: var(--dark-blue);
-                flex-direction: column; justify-content: center; align-items: center;
-                gap: 2.5rem; transition: right 0.4s ease-in-out;
-                box-shadow: -10px 0 20px rgba(0,0,0,0.2);
+            .nav-menu {
+                position: fixed;
+                top: 0; right: -100%;
+                width: 70%; height: 100vh;
+                background-color: var(--background-color);
+                box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                transition: right var(--transition-speed);
             }
-            .nav__list.show-menu { right: 0; }
-            .nav__toggle { display: block; }
-            .header__actions { gap: 1rem; }
-            .hero { text-align: center; justify-content: center; }
-            .hero__content { padding: 0 1rem; }
-            .hero__title { font-size: 2.5rem; }
-            .section__title, #detail-title, .profile-info h1 { font-size: 1.8rem; }
-            .profile-header { flex-direction: column; text-align: center; }
+            .nav-menu.active { right: 0; }
+            .nav-list { flex-direction: column; text-align: center; }
+            .nav-toggle { display: block; font-size: 1.5rem; }
+            .nav-close { display: block; position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; }
+            .hero-title { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="page">
-        <div class="auth-form">
-            <h2 class="auth-form__title">Cineflux'a Giriş Yap</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="Kullanıcı Adı (admin)" required>
+    <div id="loader" class="loader-wrapper hidden">
+        <div class="loader"></div>
+    </div>
+
+    <div id="toast" class="toast-notification"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="nav-logo" data-page="home-page">✨ Aura</a>
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active" data-page="home-page">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="shop-page">Shop</a></li>
+                    <li><a href="#" class="nav-link" data-page="about-page">About</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact-page">Contact</a></li>
+                </ul>
+                <div class="nav-close" id="nav-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Şifre (admin)" required>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle-button" class="nav-icon theme-toggle">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5M12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3m9-4h-2c-.45 0-.85.35-.95.79c-.19 1.43-.65 2.76-1.33 3.9c-.31.52-.1.97.46 1.12l1.45.39c.58.15.99.69.99 1.28v.01c0 .68-.53 1.22-1.21 1.22h-1.04l-1.6-3.83c-.22-.52-.72-.85-1.28-.85h-1.84c-.56 0-1.06.33-1.28.85l-1.6 3.83H8.21C7.53 20 7 19.46 7 18.78v-.01c0-.59.4-1.13.99-1.28l1.45-.39c.56-.15.77-.6.46-1.12c-.68-1.14-1.14-2.47-1.33-3.9C8.45 11.35 8.05 11 7.6 11H5c-.55 0-1-.45-1-1s.45-1 1-1h2.05c.49 0 .93-.33 1.05-.81C8.6 6.94 9.42 5.92 10.5 5.17c.42-.29.58-.82.36-1.26L10.07 2.7c-.24-.48-.02-1.07.45-1.26C10.96 1.25 11.47 1 12 1s1.04.25 1.48.44c.47.19.69.78.45 1.26l-.79 1.21c-.22.44-.06.97.36 1.26c1.08.75 1.9 1.77 2.41 3.02c.12.48.56.81 1.05.81H20c.55 0 1 .45 1 1s-.45 1-1 1"/></svg>
+                    <svg id="theme-icon-dark" class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26a5.403 5.403 0 0 1-5.4-5.4c0-1.81 1.87-3.22 2.26-4.4A8.934 8.934 0 0 0 12 3"/></svg>
+                </button>
+                <div id="auth-container" class="nav-icon">
+                    <a href="#" id="auth-link">Login/Register</a>
+                    <span id="user-info" class="hidden"></span>
+                    <a href="#" id="logout-link" class="hidden">Logout</a>
                 </div>
-                <button type="submit" class="btn">Giriş Yap</button>
-                <p class="error-message" id="error-message">Hatalı kullanıcı adı veya şifre.</p>
+                <div id="cart-icon" class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17 18c-1.11 0-2 .89-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2c0-1.11-.89-2-2-2M1 2h3.27l.94 2H20a1 1 0 0 1 1 1c0 .17-.05.34-.12.5l-3.58 6.47c-.34.61-1 1.03-1.75 1.03H8.1l-.9 1.63l-.03.12a.25.25 0 0 0 .25.25H19v2H7a2 2 0 0 1-2-2c0-.35.09-.68.24-.96l1.36-2.45L3 4H1V2m6 16c-1.11 0-2 .89-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2c0-1.11-.89-2-2-2m9-7l2.78-5H6.14l2.36 4.36l.24.44h5.21l.95-1.71l.24-.44H13.2c.45.63.78 1.34 1 2.11c.22.77.16 1.58-.16 2.29H14.2c.5 0 1.05-.21 1.42-.59c.37-.37.58-.88.58-1.41Z"/></svg>
+                    <span id="cart-count" class="cart-count">0</span>
+                </div>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home-page" class="page">
+            <div class="hero container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Style That Defines You</h1>
+                    <p class="hero-description">Discover the latest trends and timeless classics. High-quality apparel designed for modern life.</p>
+                    <a href="#" class="btn btn-primary" data-page="shop-page">Shop Collection</a>
+                </div>
+                <div class="hero-image"></div>
+            </div>
+            <div class="featured section container">
+                <h2 class="section-title">Featured Products</h2>
+                <div id="featured-products-grid" class="grid featured-products-grid">
+                    </div>
+            </div>
+        </section>
+
+        <section id="shop-page" class="page hidden">
+            <div class="container section">
+                <h2 class="section-title">Our Collection</h2>
+                <div class="shop-container">
+                    <aside class="filters">
+                        <div class="filter-group">
+                            <input type="text" id="search-bar" class="search-bar" placeholder="Search products...">
+                        </div>
+                        <div class="filter-group">
+                            <h3>Categories</h3>
+                            <ul id="category-filters">
+                                <li><button class="active" data-category="all">All</button></li>
+                                <li><button data-category="men">Men</button></li>
+                                <li><button data-category="women">Women</button></li>
+                                <li><button data-category="kids">Kids</button></li>
+                                <li><button data-category="accessories">Accessories</button></li>
+                            </ul>
+                        </div>
+                        <div class="filter-group">
+                            <h3>Sort By</h3>
+                            <select id="sort-options">
+                                <option value="newest">Newest</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="rating-desc">Rating</option>
+                            </select>
+                        </div>
+                    </aside>
+                    <div class="product-list">
+                        <div id="product-grid" class="grid product-grid">
+                            </div>
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <button id="load-more-btn" class="btn btn-secondary">Load More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="checkout-page" class="page hidden">
+            <div class="container section">
+                <h2 class="section-title">Checkout</h2>
+                <div class="checkout-container">
+                    <div class="shipping-details">
+                        <h3>Shipping Details</h3>
+                        <form id="shipping-form" class="auth-form">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postalCode">Postal Code</label>
+                                <input type="text" id="postalCode" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        <div id="summary-items"></div>
+                        <div class="cart-totals">
+                            <div class="cart-total-row">
+                                <span>Subtotal</span>
+                                <span id="summary-subtotal">$0.00</span>
+                            </div>
+                            <div class="cart-total-row">
+                                <span>Tax (10%)</span>
+                                <span id="summary-tax">$0.00</span>
+                            </div>
+                            <div class="cart-total-row">
+                                <span>Shipping</span>
+                                <span id="summary-shipping">$5.00</span>
+                            </div>
+                            <div class="cart-total-row">
+                                <strong>Total</strong>
+                                <strong id="summary-total">$0.00</strong>
+                            </div>
+                        </div>
+                        <button id="place-order-btn" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about-page" class="page hidden"><div class="container section"><h2 class="section-title">About Us</h2><p>Content for About page...</p></div></section>
+        <section id="contact-page" class="page hidden"><div class="container section"><h2 class="section-title">Contact Us</h2><p>Content for Contact page...</p></div></section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            </div>
+        <div class="footer-bottom container">
+            <p>&copy; 2025 Aura. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="product-detail-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div id="product-detail-content">
+                <img id="detail-image" src="" alt="Product Image">
+                <div class="detail-info">
+                    <h2 id="detail-name">Product Name</h2>
+                    <p id="detail-price" class="product-price">$0.00</p>
+                    <p id="detail-description">Product description...</p>
+                    <div class="detail-options">
+                        <label for="detail-size">Size:</label>
+                        <select id="detail-size"></select>
+                    </div>
+                    <button id="detail-add-to-cart" class="btn btn-primary">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>Your Cart</h2>
+            <div id="cart-items-container">
+                </div>
+            <div class="cart-totals">
+                <div class="cart-total-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="cart-total-row">
+                    <strong>Total</strong>
+                    <strong id="cart-total">$0.00</strong>
+                </div>
+            </div>
+            <button id="checkout-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="modal-close">&times;</button>
+            <h2>Login</h2>
+            <form id="login-form" class="auth-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
             </form>
+            <p class="form-switch">Don't have an account? <a id="show-register">Register</a></p>
         </div>
     </div>
 
-    <div id="home-page" class="page">
-        <header class="header">
-            <a href="#" class="logo" onclick="navigateTo('home-page')">Cine<span>flux</span></a>
-            <nav class="nav">
-                <div class="nav__menu" id="nav-menu">
-                    <ul class="nav__list">
-                        <li><a href="#" class="nav__link" onclick="navigateTo('home-page')">Ana Sayfa</a></li>
-                        <li><a href="#" class="nav__link">Diziler</a></li>
-                        <li><a href="#" class="nav__link">Filmler</a></li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="header__actions">
-                <i class="ri-search-line"></i>
-                <div class="profile__dropdown">
-                    <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="profile__avatar">
-                    <ul class="dropdown__menu">
-                        <li class="dropdown__item"><a href="#" onclick="navigateTo('profile-page')"><i class="ri-user-line"></i>Profil</a></li>
-                        <li class="dropdown__item"><a href="#" id="logout-btn"><i class="ri-logout-box-r-line"></i>Çıkış Yap</a></li>
-                    </ul>
-                </div>
-                <div class="nav__toggle" id="nav-toggle">
-                    <i class="ri-menu-line"></i>
-                </div>
-            </div>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="container">
-                    <div class="hero__content">
-                        <p class="hero__subtitle">Yeni Sezon</p>
-                        <h1 class="hero__title">The Quantum Rift</h1>
-                        <p class="hero__description">
-                            Gerçekliğin dokusunu çözen kozmik bir tehdidi durdurmak için zamana karşı yarışan bir fizikçinin hikayesi.
-                        </p>
-                        <a href="#" class="btn watch-now-btn" 
-                           data-title="The Quantum Rift"
-                           data-description="Gerçekliğin dokusunu çözen kozmik bir tehdidi durdurmak için zamana karşı yarışan bir fizikçinin hikayesi."
-                           data-video-id="hA2t4Q_fFaU">
-                           <i class="ri-play-fill"></i> Şimdi İzle
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section container">
-                <h2 class="section__title">Gündemdekiler</h2>
-                <div class="carousel__slider">
-                    <div class="movie-card watch-now-btn" data-title="Neon Hayaletler" data-description="Siberpunk bir metropolde, bir dedektif dijital bilinç hırsızlığını araştırır." data-video-id="g4Hbz2jLxvQ">
-                        <img src="https://images.unsplash.com/photo-1574681357558-139392823158?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
-                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
-                    </div>
-                     <div class="movie-card watch-now-btn" data-title="Mars'ın Yankıları" data-description="Kızıl gezegendeki ilk koloni, hayatta kalmalarını tehdit eden gizemli bir sinyal keşfeder." data-video-id="QLv_u_2WSaE">
-                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
-                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
-                    </div>
-                     <div class="movie-card watch-now-btn" data-title="Boşluk Gezgini" data-description="Evrenin uzak köşelerine seyahat eden yalnız bir astronot, insanlığın kökenine dair bir sır bulur." data-video-id="zSgiXGELjbc">
-                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e4472745a?q=80&w=300&auto=format&fit=crop" class="movie-card__img">
-                        <div class="movie-card__overlay"><i class="ri-play-circle-line movie-card__play-icon"></i></div>
-                    </div>
-                    </div>
-            </section>
-        </main>
-    </div>
-
-    <div id="movie-detail-page" class="page">
-        <div class="detail-container">
-            <a href="#" class="btn" onclick="navigateTo('home-page')"><i class="ri-arrow-left-line"></i> Geri Dön</a>
-            <div class="video-player-wrapper">
-                <iframe id="video-player" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div>
-                <h1 id="detail-title">Film Başlığı</h1>
-                <p id="detail-description">Film açıklaması buraya gelecek.</p>
-            </div>
-        </div>
-    </div>
-    
-    <div id="profile-page" class="page">
-        <div class="container">
-            <a href="#" class="btn" style="margin-bottom: 2rem;" onclick="navigateTo('home-page')"><i class="ri-arrow-left-line"></i> Ana Sayfaya Dön</a>
-             <div class="profile-header">
-                <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="profile-avatar-large">
-                <div class="profile-info">
-                    <h1>Admin</h1>
-                    <p>Cineflux Premium Üyesi</p>
-                </div>
-            </div>
-
-            <section class="section">
-                 <h2 class="section__title">İzleme Listem</h2>
-                <div class="category-grid">
-                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1611348524794-5553c54a4bcc?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
-                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1518063319835-90f5c15f9b48?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
-                    <div class="movie-card"><img src="https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=300&auto=format&fit=crop" class="movie-card__img"></div>
-                </div>
-            </section>
+    <div id="register-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="modal-close">&times;</button>
+            <h2>Register</h2>
+            <form id="register-form" class="auth-form">
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            <p class="form-switch">Already have an account? <a id="show-login">Login</a></p>
         </div>
     </div>
 
+    <script type="module">
+        // --- FIREBASE SDK IMPORTS & CONFIG ---
+        // IMPORTANT: Replace this with your own Firebase project's configuration!
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+        
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY", // Replace
+            authDomain: "YOUR_AUTH_DOMAIN", // Replace
+            projectId: "YOUR_PROJECT_ID", // Replace
+            storageBucket: "YOUR_STORAGE_BUCKET", // Replace
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Replace
+            appId: "YOUR_APP_ID", // Replace
+            measurementId: "YOUR_MEASUREMENT_ID" // Replace
+        };
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM Elementleri ---
-            const pages = document.querySelectorAll('.page');
-            const loginForm = document.getElementById('login-form');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const errorMessage = document.getElementById('error-message');
-            const logoutBtn = document.getElementById('logout-btn');
-            const navMenu = document.getElementById('nav-menu');
-            const navToggle = document.getElementById('nav-toggle');
-            const watchNowButtons = document.querySelectorAll('.watch-now-btn');
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
 
-            // --- Sayfa Yönlendirme Fonksiyonu ---
-            window.navigateTo = (pageId) => {
-                // Önce tüm sayfaları gizle
-                pages.forEach(page => page.classList.remove('active-page'));
-                // İstenen sayfayı göster
-                const targetPage = document.getElementById(pageId);
-                if (targetPage) {
-                    targetPage.classList.add('active-page');
-                }
-                window.scrollTo(0, 0); // Sayfa değişince en üste git
-            };
+        // --- GLOBAL STATE & VARIABLES ---
+        let allProducts = [];
+        let displayedProducts = [];
+        let cart = [];
+        let currentUser = null;
+        let lastVisibleProduct = null;
+        const productsPerPage = 8;
+        
+        // --- DOM ELEMENT SELECTORS ---
+        const DOMElements = {
+            loader: document.getElementById('loader'),
+            toast: document.getElementById('toast'),
+            pages: document.querySelectorAll('.page'),
+            navLinks: document.querySelectorAll('.nav-link, .nav-logo, .btn[data-page]'),
+            themeToggle: document.getElementById('theme-toggle-button'),
+            productGrid: document.getElementById('product-grid'),
+            featuredGrid: document.getElementById('featured-products-grid'),
+            cartIcon: document.getElementById('cart-icon'),
+            cartCount: document.getElementById('cart-count'),
+            loadMoreBtn: document.getElementById('load-more-btn'),
+            // ... add other selectors here
+        };
 
-            // --- Oturum Kontrolü ve Başlangıç ---
-            const checkLoginStatus = () => {
-                if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                    navigateTo('home-page');
+        // --- UTILITY & UI FUNCTIONS ---
+        const showLoader = () => DOMElements.loader.classList.remove('hidden');
+        const hideLoader = () => DOMElements.loader.classList.add('hidden');
+        
+        const showToast = (message) => {
+            DOMElements.toast.textContent = message;
+            DOMElements.toast.classList.add('show');
+            setTimeout(() => DOMElements.toast.classList.remove('show'), 3000);
+        };
+
+        const showPage = (pageId) => {
+            DOMElements.pages.forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId)?.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
+            logEvent(analytics, 'page_view', { page_title: pageId });
+            window.scrollTo(0, 0);
+        };
+
+        const openModal = (modalId) => document.getElementById(modalId)?.classList.add('active');
+        const closeModal = (modalId) => document.getElementById(modalId)?.classList.remove('active');
+
+        // --- PRODUCT FETCHING & RENDERING ---
+        const getImageUrl = async (path) => {
+            try {
+                const storageRef = ref(storage, path);
+                return await getDownloadURL(storageRef);
+            } catch (error) {
+                console.error("Error getting image URL:", error);
+                return 'https://via.placeholder.com/300'; // Fallback image
+            }
+        };
+
+        const fetchProducts = async (loadMore = false) => {
+            showLoader();
+            try {
+                const productsRef = collection(db, "products");
+                let q;
+                if (loadMore && lastVisibleProduct) {
+                    q = query(productsRef, orderBy("name"), startAfter(lastVisibleProduct), limit(productsPerPage));
                 } else {
-                    navigateTo('login-page');
+                    q = query(productsRef, orderBy("name"), limit(productsPerPage));
+                    allProducts = []; // Reset on initial load
                 }
-            };
+                
+                const querySnapshot = await getDocs(q);
+                lastVisibleProduct = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+                if (querySnapshot.empty) {
+                    DOMElements.loadMoreBtn.classList.add('hidden');
+                }
+
+                const productsPromises = querySnapshot.docs.map(async (doc) => {
+                    const productData = doc.data();
+                    const publicImageUrl = await getImageUrl(productData.imageUrl);
+                    return { id: doc.id, ...productData, publicImageUrl };
+                });
+                
+                const newProducts = await Promise.all(productsPromises);
+                allProducts = loadMore ? [...allProducts, ...newProducts] : newProducts;
+                
+                renderProducts(allProducts);
+                if (!loadMore) renderFeaturedProducts(allProducts.slice(0, 4));
+
+            } catch (error) {
+                console.error("Error fetching products: ", error);
+                showToast("Failed to load products.");
+            } finally {
+                hideLoader();
+            }
+        };
+
+        const createStarRating = (rating) => {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 !== 0;
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) starsHTML += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72l3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41l-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18l-1.1 4.72c-.2.86.73 1.54 1.49 1.08L12 17.27Z"/></svg>';
+            // Add half star/empty stars logic if needed
+            return `<div class="product-rating">${starsHTML}</div>`;
+        };
+
+        const renderProducts = (productsToRender) => {
+            DOMElements.productGrid.innerHTML = productsToRender.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <img src="${product.publicImageUrl}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        ${createStarRating(product.rating || 0)}
+                        <p class="product-price">$${product.price.toFixed(2)}</p>
+                        <button class="btn btn-primary add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        };
+        
+        const renderFeaturedProducts = (products) => {
+             DOMElements.featuredGrid.innerHTML = products.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <img src="${product.publicImageUrl}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-price">$${product.price.toFixed(2)}</p>
+                        <button class="btn btn-secondary add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+
+        // --- PRODUCT DETAIL LOGIC ---
+        const showProductDetail = (productId) => {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
             
-            // --- Mobil Menü İşlevselliği ---
-            if (navToggle) {
-                navToggle.addEventListener('click', () => {
-                    navMenu.classList.toggle('show-menu');
-                    navToggle.innerHTML = navMenu.classList.contains('show-menu')
-                        ? '<i class="ri-close-line"></i>'
-                        : '<i class="ri-menu-line"></i>';
-                });
+            document.getElementById('detail-image').src = product.publicImageUrl;
+            document.getElementById('detail-name').textContent = product.name;
+            document.getElementById('detail-price').textContent = `$${product.price.toFixed(2)}`;
+            document.getElementById('detail-description').textContent = product.description;
+            
+            const sizeSelect = document.getElementById('detail-size');
+            sizeSelect.innerHTML = (product.sizes || ['One Size']).map(s => `<option value="${s}">${s}</option>`).join('');
+
+            const addToCartBtn = document.getElementById('detail-add-to-cart');
+            addToCartBtn.dataset.id = product.id; // Ensure button has correct ID
+
+            logEvent(analytics, 'view_item', { item_id: product.id, item_name: product.name });
+            openModal('product-detail-modal');
+        };
+
+        // --- CART LOGIC ---
+        const addToCart = (productId, size = 'M', quantity = 1) => {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId && item.size === size);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ ...product, size, quantity });
             }
-            document.querySelectorAll('.nav__link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('show-menu')) {
-                        navMenu.classList.remove('show-menu');
-                        navToggle.innerHTML = '<i class="ri-menu-line"></i>';
-                    }
-                });
-            });
-
-            // --- Giriş (Login) İşlemi ---
-            if (loginForm) {
-                loginForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    if (usernameInput.value === 'admin' && passwordInput.value === 'admin') {
-                        sessionStorage.setItem('isLoggedIn', 'true');
-                        errorMessage.style.display = 'none';
-                        navigateTo('home-page');
-                    } else {
-                        errorMessage.style.display = 'block';
-                    }
-                });
+            
+            updateCart();
+            showToast(`${product.name} added to cart!`);
+            logEvent(analytics, 'add_to_cart', { item_id: product.id, item_name: product.name, price: product.price, quantity: 1 });
+        };
+        
+        const updateCart = () => {
+            renderCart();
+            updateCartCount();
+            if (currentUser) saveCartToFirestore();
+        };
+        
+        const renderCart = () => {
+            const cartContainer = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+                document.getElementById('checkout-btn').disabled = true;
+            } else {
+                cartContainer.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.publicImageUrl}" alt="${item.name}" class="cart-item-img">
+                        <div class="cart-item-info">
+                            <p class="cart-item-name">${item.name}</p>
+                            <p class="cart-item-price">$${item.price.toFixed(2)} (Size: ${item.size})</p>
+                        </div>
+                        <input type="number" class="cart-item-quantity" value="${item.quantity}" min="1" data-id="${item.id}" data-size="${item.size}">
+                        <button class="remove-from-cart" data-id="${item.id}" data-size="${item.size}">&times;</button>
+                    </div>
+                `).join('');
+                document.getElementById('checkout-btn').disabled = false;
             }
+            
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `$${subtotal.toFixed(2)}`;
+        };
+        
+        const updateCartCount = () => {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            DOMElements.cartCount.textContent = totalItems;
+            DOMElements.cartCount.classList.toggle('hidden', totalItems === 0);
+        };
+        
+        const removeFromCart = (productId, size) => {
+            cart = cart.filter(item => !(item.id === productId && item.size === size));
+            updateCart();
+        };
 
-            // --- Çıkış (Logout) İşlemi ---
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    sessionStorage.removeItem('isLoggedIn');
-                    navigateTo('login-page');
-                });
+        const changeCartQuantity = (productId, size, quantity) => {
+            const item = cart.find(i => i.id === productId && i.size === size);
+            if (item) {
+                item.quantity = parseInt(quantity, 10);
+                if (item.quantity <= 0) {
+                    removeFromCart(productId, size);
+                } else {
+                    updateCart();
+                }
             }
+        };
 
-            // --- "İzle" Butonlarına Tıklama Olayı ---
-            watchNowButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    
-                    // Oturum kontrolü
-                    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-                       navigateTo('login-page');
-                       return;
-                    }
+        // --- AUTHENTICATION & USER DATA ---
+        onAuthStateChanged(auth, async (user) => {
+            const authLink = document.getElementById('auth-link');
+            const userInfo = document.getElementById('user-info');
+            const logoutLink = document.getElementById('logout-link');
 
-                    const title = button.dataset.title;
-                    const description = button.dataset.description;
-                    const videoId = button.dataset.videoId;
-
-                    document.getElementById('detail-title').textContent = title;
-                    document.getElementById('detail-description').textContent = description;
-                    document.getElementById('video-player').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-
-                    navigateTo('movie-detail-page');
-                });
-            });
-
-            // Sayfa ilk yüklendiğinde oturum durumunu kontrol et
-            checkLoginStatus();
+            if (user) {
+                currentUser = { uid: user.uid, email: user.email };
+                authLink.classList.add('hidden');
+                userInfo.textContent = user.email;
+                userInfo.classList.remove('hidden');
+                logoutLink.classList.remove('hidden');
+                await loadCartFromFirestore();
+            } else {
+                currentUser = null;
+                cart = []; // Or handle local cart persistence
+                updateCart();
+                authLink.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                logoutLink.classList.add('hidden');
+            }
         });
+        
+        const saveCartToFirestore = async () => {
+            if (!currentUser) return;
+            try {
+                const cartDocRef = doc(db, 'carts', currentUser.uid);
+                await setDoc(cartDocRef, { items: cart });
+            } catch (error) { console.error("Error saving cart:", error); }
+        };
+        
+        const loadCartFromFirestore = async () => {
+            if (!currentUser) return;
+            try {
+                const cartDocRef = doc(db, 'carts', currentUser.uid);
+                const docSnap = await getDoc(cartDocRef);
+                if (docSnap.exists()) {
+                    cart = docSnap.data().items || [];
+                    updateCart();
+                }
+            } catch (error) { console.error("Error loading cart:", error); }
+        };
+
+        // --- THEME TOGGLE ---
+        const applyTheme = (theme) => {
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            document.getElementById('theme-icon-light').classList.toggle('hidden', theme === 'dark');
+            document.getElementById('theme-icon-dark').classList.toggle('hidden', theme !== 'dark');
+            localStorage.setItem('theme', theme);
+        };
+
+        // --- EVENT LISTENERS ---
+        const setupEventListeners = () => {
+            // Navigation
+            DOMElements.navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPage(e.currentTarget.dataset.page);
+                });
+            });
+
+            // Mobile Menu
+            document.getElementById('nav-toggle').addEventListener('click', () => document.getElementById('nav-menu').classList.add('active'));
+            document.getElementById('nav-close').addEventListener('click', () => document.getElementById('nav-menu').classList.remove('active'));
+
+            // Theme Toggle
+            DOMElements.themeToggle.addEventListener('click', () => {
+                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+            
+            // Modals
+            document.querySelectorAll('.modal-close').forEach(btn => btn.addEventListener('click', () => btn.closest('.modal').classList.remove('active')));
+            document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', (e) => {
+                if(e.target === modal) modal.classList.remove('active');
+            }));
+
+            // Product Interactions
+            document.body.addEventListener('click', e => {
+                if (e.target.closest('.add-to-cart-btn')) {
+                    const productId = e.target.closest('.add-to-cart-btn').dataset.id;
+                    addToCart(productId);
+                }
+                if (e.target.closest('.product-image')) {
+                    const productId = e.target.closest('.product-card').dataset.id;
+                    showProductDetail(productId);
+                }
+                if (e.target.id === 'detail-add-to-cart') {
+                    const productId = e.target.dataset.id;
+                    const size = document.getElementById('detail-size').value;
+                    addToCart(productId, size);
+                    closeModal('product-detail-modal');
+                }
+            });
+
+            // Cart
+            DOMElements.cartIcon.addEventListener('click', () => openModal('cart-modal'));
+            document.getElementById('cart-items-container').addEventListener('click', e => {
+                if (e.target.classList.contains('remove-from-cart')) {
+                    removeFromCart(e.target.dataset.id, e.target.dataset.size);
+                }
+            });
+            document.getElementById('cart-items-container').addEventListener('change', e => {
+                if (e.target.classList.contains('cart-item-quantity')) {
+                    changeCartQuantity(e.target.dataset.id, e.target.dataset.size, e.target.value);
+                }
+            });
+
+            // Auth Modals
+            document.getElementById('auth-link').addEventListener('click', (e) => { e.preventDefault(); openModal('login-modal'); });
+            document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); closeModal('login-modal'); openModal('register-modal'); });
+            document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); closeModal('register-modal'); openModal('login-modal'); });
+            
+            // Auth Forms
+            document.getElementById('login-form').addEventListener('submit', async e => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast("Logged in successfully!");
+                    closeModal('login-modal');
+                } catch (error) { showToast(`Login failed: ${error.message}`); }
+            });
+            
+            document.getElementById('register-form').addEventListener('submit', async e => {
+                e.preventDefault();
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showToast("Registration successful! You are now logged in.");
+                    closeModal('register-modal');
+                } catch (error) { showToast(`Registration failed: ${error.message}`); }
+            });
+            
+            document.getElementById('logout-link').addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await signOut(auth);
+                    showToast("Logged out.");
+                } catch (error) { showToast(`Logout failed: ${error.message}`); }
+            });
+
+            // Shop Filters
+            DOMElements.loadMoreBtn.addEventListener('click', () => fetchProducts(true));
+
+            // Checkout
+            document.getElementById('checkout-btn').addEventListener('click', () => {
+                if(!currentUser) {
+                    showToast("Please log in to proceed to checkout.");
+                    openModal('login-modal');
+                    return;
+                }
+                closeModal('cart-modal');
+                showPage('checkout-page');
+            });
+        };
+
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply saved theme on load
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            setupEventListeners();
+            fetchProducts();
+        });
+
     </script>
 </body>
 </html>
