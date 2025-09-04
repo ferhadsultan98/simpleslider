@@ -1,566 +1,735 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduSys Pro - Təhsil İdarəetmə Sistemi</title>
+    <title>Cineflux - Your Universe of Movies</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
 
     <style>
-        /* --- 1. Qlobal Stillər və Dəyişənlər --- */
+        /* --- CSS STYLES --- */
+        
+        /* 1. VARIABLES & RESET */
         :root {
-            --primary-blue: #007BFF;
-            --primary-blue-hover: #0056b3;
-            --light-blue: #f0f8ff;
-            --dark-gray: #343a40;
-            --medium-gray: #6c757d;
-            --light-gray: #f8f9fa;
-            --border-color: #dee2e6;
-            --white: #ffffff;
-            --success-green: #28a745;
-            --danger-red: #dc3545;
-            --warning-orange: #ffc107;
-            --font-family: 'Poppins', sans-serif;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --midnight-blue: #0B172A;
+            --dark-blue: #132039;
+            --neon-cyan: #00f7ff;
+            --soft-white: #EAF0FF;
+            --light-gray: #a8b2d1;
+            --shadow-color: rgba(0, 247, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: var(--font-family);
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--midnight-blue);
+            color: var(--soft-white);
+            overflow-x: hidden;
         }
-        .hidden { display: none !important; }
 
-        /* --- 2. Əsas Struktur və Köməkçi Stillər --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        main { padding-top: 80px; }
-        section { padding: 60px 0; border-bottom: 1px solid var(--border-color); }
-        section:last-child { border-bottom: none; }
-        h1, h2, h3 { margin-bottom: 20px; font-weight: 600; }
-        h2 { text-align: center; color: var(--primary-blue); margin-bottom: 40px; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
         
-        /* --- 3. Naviqasiya Paneli --- */
-        .navbar { background-color: var(--white); box-shadow: var(--shadow); position: fixed; width: 100%; top: 0; left: 0; z-index: 1000; }
-        .navbar .container { display: flex; justify-content: space-between; align-items: center; height: 70px; }
-        .navLogo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
-        .navLinks { list-style: none; display: flex; gap: 25px; align-items: center; }
-        .navLinks a { text-decoration: none; color: var(--medium-gray); font-weight: 500; transition: color 0.3s ease; padding: 5px; }
-        .navLinks a:hover { color: var(--primary-blue); }
-        #logoutButton { background: none; border: none; color: var(--danger-red); font-size: 1rem; cursor: pointer; font-family: var(--font-family); font-weight: 500;}
-        #logoutButton:hover { text-decoration: underline; }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
 
-        .hamburgerMenu { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
-        .hamburgerMenu .bar { width: 25px; height: 3px; background-color: var(--dark-gray); border-radius: 5px; transition: all 0.3s ease-in-out; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--midnight-blue);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-blue);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-cyan);
+        }
 
-        /* --- 4. Ümumi Komponentlər (Kart, Düymə, Forma) --- */
-        .card { background-color: var(--white); border-radius: 8px; box-shadow: var(--shadow); padding: 25px; margin-bottom: 20px; }
-        .gridContainer { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .btn { display: inline-block; padding: 12px 24px; border: none; border-radius: 5px; background-color: var(--primary-blue); color: var(--white); font-weight: 500; cursor: pointer; text-decoration: none; text-align: center; transition: background-color 0.3s, transform 0.2s; }
-        .btn:hover { background-color: var(--primary-blue-hover); transform: translateY(-2px); }
-        .btn-danger { background-color: var(--danger-red); }
-        .btn-danger:hover { background-color: #c82333; }
-        .btn-success { background-color: var(--success-green); }
-        .btn-success:hover { background-color: #218838; }
+        /* 2. MAIN LAYOUT & HELPERS */
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--neon-cyan);
+            color: var(--midnight-blue);
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 247, 255, 0.2);
+        }
         
-        .formGroup { margin-bottom: 20px; }
-        .formGroup label { display: block; margin-bottom: 8px; font-weight: 500; }
-        .formGroup input, .formGroup select, .formGroup textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; font-family: var(--font-family); }
-        textarea { resize: vertical; min-height: 80px; }
-
-        /* --- 5. Xüsusi Bölmə Stilləri --- */
+        .section {
+            padding: 60px 0;
+        }
         
-        /* Giriş Ekranı */
-        #loginScreen { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .loginBox { max-width: 500px; }
-        .loginBox .btn { margin: 10px; width: 250px; font-size: 1.2rem; }
+        .section__title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--soft-white);
+            border-left: 4px solid var(--neon-cyan);
+            padding-left: 1rem;
+        }
+        
+        /* 3. HEADER & NAVIGATION */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            background: rgba(11, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            transition: background 0.3s ease;
+        }
 
-        /* İmtahan */
-        .question { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .question:last-of-type { border-bottom: none; }
-        .question p { font-weight: 600; margin-bottom: 10px; }
-        .options-list { list-style: none; }
-        .options-list li { margin-bottom: 8px; }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+        
+        .logo span {
+            color: var(--soft-white);
+        }
 
-        /* Cədvəl Stilləri */
-        .responsiveTable { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .responsiveTable th, .responsiveTable td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
-        .responsiveTable th { background-color: var(--light-gray); font-weight: 600; }
-        .responsiveTable td .btn { padding: 6px 12px; margin-right: 5px; }
+        .nav__list {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
 
-        /* Modal Pəncərə */
-        .modal { position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-        .modalContent { background-color: var(--white); margin: auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; position: relative; }
-        .closeButton { color: #aaa; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 20px; }
-        .closeButton:hover, .closeButton:focus { color: var(--dark-gray); text-decoration: none; cursor: pointer; }
+        .nav__link {
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
 
-        /* --- 6. Responsiv Dizayn --- */
+        .nav__link:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .nav__user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .nav__user i {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .nav__user i:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .nav__user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-cyan);
+        }
+        
+        .nav__toggle {
+            display: none; /* Hidden on desktop */
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* 4. HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(11, 23, 42, 0.7), var(--midnight-blue)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop') no-repeat center center/cover;
+            position: relative;
+        }
+        
+        .hero__content {
+            max-width: 600px;
+        }
+        
+        .hero__subtitle {
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+
+        .hero__title {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .hero__description {
+            font-size: 1rem;
+            color: var(--light-gray);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        /* 5. MOVIE CAROUSEL */
+        .carousel {
+            position: relative;
+        }
+        
+        .carousel__slider {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-cyan) var(--midnight-blue);
+        }
+        
+        .carousel__slider::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .carousel__slider::-webkit-scrollbar-thumb {
+            background: var(--dark-blue);
+            border-radius: 10px;
+        }
+        
+        .carousel__slider:hover::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+        }
+
+        .movie-card {
+            flex: 0 0 auto;
+            width: 200px;
+            scroll-snap-align: start;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .movie-card__img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-card__overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(11, 23, 42, 0.9), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .movie-card:hover .movie-card__overlay {
+            opacity: 1;
+        }
+
+        .movie-card__title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--soft-white);
+        }
+
+        .movie-card__info {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .movie-card__info i {
+            color: var(--neon-cyan);
+        }
+        
+        .continue-watching .movie-card__progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--neon-cyan);
+        }
+
+        /* 6. GENRE/CATEGORY PAGE GRID */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 7. LOGIN/SIGNUP FORM */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(11, 23, 42, 0.8), var(--midnight-blue)), url('https://images.unsplash.com/photo-1594904351111-a072f80b1a71?q=80&w=2535&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        
+        .auth-form {
+            background: var(--dark-blue);
+            padding: 2.5rem;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+        }
+        
+        .auth-form__title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--midnight-blue);
+            border: 1px solid var(--dark-blue);
+            border-radius: 5px;
+            color: var(--soft-white);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+
+        .auth-form .btn {
+            width: 100%;
+            font-size: 1.1rem;
+        }
+        
+        .auth-form__switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--light-gray);
+        }
+        
+        .auth-form__switch a {
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+
+        /* 8. FOOTER */
+        .footer {
+            background: var(--dark-blue);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 247, 255, 0.1);
+        }
+        
+        .footer__social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer__social a {
+            font-size: 1.5rem;
+            color: var(--light-gray);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .footer__social a:hover {
+            color: var(--neon-cyan);
+            transform: translateY(-3px);
+        }
+
+        .footer__links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer__copyright {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        /* 9. RESPONSIVE DESIGN */
+        @media (max-width: 992px) {
+            .nav__list {
+                gap: 1.5rem;
+            }
+            .hero__title {
+                font-size: 3rem;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .navLinks { position: absolute; top: 70px; left: 0; right: 0; flex-direction: column; background-color: var(--white); text-align: center; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; box-shadow: var(--shadow); }
-            .navLinks.active { max-height: 500px; padding-bottom: 20px; }
-            .navLinks li { padding: 10px 0; }
-            .hamburgerMenu { display: flex; }
-            .hamburgerMenu.toggle .bar:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
-            .hamburgerMenu.toggle .bar:nth-child(2) { opacity: 0; }
-            .hamburgerMenu.toggle .bar:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+            .nav__menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 60%;
+                height: 100vh;
+                background: var(--dark-blue);
+                padding-top: 6rem;
+                transition: right 0.4s ease;
+                box-shadow: -10px 0 20px rgba(0,0,0,0.2);
+            }
             
-            main { padding-top: 70px; }
-            section { padding: 40px 0; }
-            .responsiveTable { border: 0; }
-            .responsiveTable thead { display: none; }
-            .responsiveTable tr { display: block; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow); }
-            .responsiveTable td { display: block; text-align: right; padding-left: 50%; position: relative; border-bottom: 1px solid var(--border-color); }
-            .responsiveTable td:last-child { border-bottom: 0; }
-            .responsiveTable td::before { content: attr(data-label); position: absolute; left: 10px; width: calc(50% - 20px); text-align: left; font-weight: 600; }
+            .nav__menu.show-menu {
+                right: 0;
+            }
+            
+            .nav__list {
+                flex-direction: column;
+                align-items: center;
+                gap: 2.5rem;
+            }
+            
+            .nav__toggle {
+                display: block;
+                z-index: 101; /* Above the menu */
+            }
+            
+            .hero {
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .hero__content {
+                padding: 0 1rem;
+            }
+            
+            .hero__title {
+                font-size: 2.5rem;
+            }
+
+            .section__title {
+                font-size: 1.8rem;
+            }
         }
+        
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+            }
+            .movie-card {
+                width: 160px;
+            }
+            .movie-card__img {
+                height: 240px;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="loginScreen">
-        <div class="container">
-            <div class="card loginBox">
-                <h1>EduSys Pro'ya Xoş Gəlmisiniz!</h1>
-                <p class="text-muted mb-4">Zəhmət olmasa, sistemə daxil olmaq üçün rolunuzu seçin.</p>
-                <button id="loginAsTeacher" class="btn">👨‍🏫 Müəllim kimi daxil ol</button>
-                <button id="loginAsStudent" class="btn">👨‍🎓 Tələbə kimi daxil ol</button>
+    <header class="header">
+        <a href="#" class="logo">Cine<span>flux</span></a>
+        
+        <nav class="nav">
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li><a href="#" class="nav__link">Home</a></li>
+                    <li><a href="#" class="nav__link">Series</a></li>
+                    <li><a href="#" class="nav__link">Movies</a></li>
+                    <li><a href="#" class="nav__link">My List</a></li>
+                </ul>
             </div>
-        </div>
-    </div>
-    
-    <div id="appContainer" class="hidden">
-        <header class="navbar">
-            <div class="container">
-                <a href="#dashboard" class="navLogo">EduSys Pro</a>
-                <nav>
-                    <ul class="navLinks" id="navLinks">
-                        <li><a href="#dashboard">İdarə Paneli</a></li>
-                        <li class="teacher-only"><a href="#questions">Suallar</a></li>
-                        <li class="student-only"><a href="#startExam">İmtahana Başla</a></li>
-                        <li><a href="#schedule">Dərs Cədvəli</a></li>
-                        <li><a href="#profile">Profil</a></li>
-                        <li><button id="logoutButton">Çıxış</button></li>
-                    </ul>
-                </nav>
-                <div class="hamburgerMenu" id="hamburgerMenu">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-            </div>
-        </header>
-
-        <main>
-            <section id="dashboard">
-                <div class="container">
-                    <h2>📊 İdarə Paneli</h2>
-                    <div class="gridContainer">
-                        <div class="card statCard"><h3>150</h3><p>Ümumi Tələbə</p></div>
-                        <div class="card statCard"><h3>82</h3><p>Planlanan Dərslər</p></div>
-                        <div class="card statCard"><h3>12</h3><p>Qarşıdan Gələn İmtahan</p></div>
-                        <div class="card statCard teacher-only"><h3>$7,850</h3><p>Ümumi Qazanc</p></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="questions" class="teacher-only">
-                <div class="container">
-                    <h2>📝 Sualları İdarə Et</h2>
-                    <div class="card">
-                        <button id="addQuestionBtn" class="btn btn-success">Yeni Sual Əlavə Et</button>
-                        <table class="responsiveTable" id="questionsTable">
-                            <thead>
-                                <tr>
-                                    <th>Sual Mətni</th>
-                                    <th>Növü</th>
-                                    <th>Düzgün Cavab</th>
-                                    <th>Əməliyyatlar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="questionsTableBody">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="startExam" class="student-only">
-                <div class="container">
-                    <h2>👨‍🎓 İmtahan: Ümumi Elm</h2>
-                    <div class="card" id="examContainer">
-                        </div>
-                     <div class="card" id="examResultCard" class="hidden">
-                        <h3>İmtahan Nəticəsi</h3>
-                        <p id="examScore"></p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="schedule">
-                <div class="container">
-                    <h2>📅 Dərs Cədvəli</h2>
-                    <div class="card teacher-only">
-                        <h3>Yeni Dərs Yarat</h3>
-                        <form id="addLessonForm">
-                            <div class="formGroup">
-                                <label for="lessonTitle">Dərsin Adı</label>
-                                <input type="text" id="lessonTitle" required>
-                            </div>
-                            <div class="formGroup">
-                                <label for="lessonDate">Tarix və Saat</label>
-                                <input type="datetime-local" id="lessonDate" required>
-                            </div>
-                            <button type="submit" class="btn">Dərs Əlavə Et</button>
-                        </form>
-                    </div>
-                    <div class="card">
-                        <h3>Qarşıdan Gələn Dərslər</h3>
-                        <div id="lessonsList">
-                            </div>
-                    </div>
-                </div>
-            </section>
             
-            <section id="profile">
-                <div class="container">
-                    <h2>👤 Profilim</h2>
-                    <div class="card">
-                        <h3 id="profileName"></h3>
-                        <p><strong>Rol:</strong> <span id="profileRole"></span></p>
-                        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+            <div class="nav__user">
+                <i class="ri-search-line"></i>
+                <i class="ri-notification-3-line"></i>
+                <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" class="nav__user-avatar">
+            </div>
+
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="ri-menu-line"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero__content">
+                    <p class="hero__subtitle">New Release</p>
+                    <h1 class="hero__title">The Quantum Rift</h1>
+                    <p class="hero__description">
+                        A brilliant physicist discovers a way to fold spacetime, but her creation unleashes a cosmic threat that could unravel reality itself. Now, she must race against time to close the rift she opened.
+                    </p>
+                    <a href="#" class="btn"><i class="ri-play-fill"></i> Watch Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <h2 class="section__title">Continue Watching</h2>
+            <div class="carousel">
+                <div class="carousel__slider continue-watching">
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1627871637578-831495c6f242?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                            <h3 class="movie-card__title">Cybernetic Dawn</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>8.9</span>
+                            </div>
+                        </div>
+                        <div class="movie-card__progress" style="width: 75%;"></div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?q=80&w=2070&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Retrograde</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>9.1</span>
+                            </div>
+                        </div>
+                        <div class="movie-card__progress" style="width: 40%;"></div>
+                    </div>
+                    </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <h2 class="section__title">Trending Now</h2>
+            <div class="carousel">
+                <div class="carousel__slider">
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=2070&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Echoes of Mars</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>8.5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e4472745a?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">The Void Walker</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>9.2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1585951237313-1b05e219a13e?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Project Chimera</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>8.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1574681357558-139392823158?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Neon Ghosts</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>9.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Zero Kelvin</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>8.3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <img src="https://images.unsplash.com/photo-1517511620942-195ae32bde17?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                        <div class="movie-card__overlay">
+                             <h3 class="movie-card__title">Final Frontier</h3>
+                            <div class="movie-card__info">
+                                <i class="ri-star-fill"></i><span>8.8</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
-        </main>
-    </div>
+            </div>
+        </section>
 
-    <div id="questionModal" class="modal hidden">
-        <div class="modalContent">
-            <span class="closeButton" id="closeModalBtn">&times;</span>
-            <h3>Yeni Sual Əlavə Et</h3>
-            <form id="questionForm">
-                <div class="formGroup">
-                    <label for="questionText">Sual Mətni</label>
-                    <textarea id="questionText" required></textarea>
+        <section class="section container">
+            <h2 class="section__title">Sci-Fi & Fantasy</h2>
+            <div class="category-grid">
+                <div class="movie-card">
+                    <img src="https://images.unsplash.com/photo-1611348524794-5553c54a4bcc?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                    <div class="movie-card__overlay">
+                        <h3 class="movie-card__title">Star Gazer</h3>
+                    </div>
                 </div>
-                <div class="formGroup">
-                    <label for="questionType">Sualın Növü</label>
-                    <select id="questionType">
-                        <option value="mcq">Çoxvariantlı (MCQ)</option>
-                        <option value="fill">Boşluq Doldurma</option>
-                    </select>
+                <div class="movie-card">
+                    <img src="https://images.unsplash.com/photo-1518063319835-90f5c15f9b48?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                    <div class="movie-card__overlay">
+                        <h3 class="movie-card__title">The Last City</h3>
+                    </div>
                 </div>
-                 <div class="formGroup">
-                    <label for="questionAnswers">Cavab Variantları (hər biri yeni sətirdə)</label>
-                    <textarea id="questionAnswers" placeholder="A) Cavab 1&#10;B) Cavab 2&#10;C) Cavab 3"></textarea>
+                 <div class="movie-card">
+                    <img src="https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=2069&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                    <div class="movie-card__overlay">
+                        <h3 class="movie-card__title">Time Bender</h3>
+                    </div>
                 </div>
-                <div class="formGroup">
-                    <label for="correctAnswer">Düzgün Cavab</label>
-                    <input type="text" id="correctAnswer" placeholder="Məsələn: C və ya 'düzgün söz'" required>
+                <div class="movie-card">
+                    <img src="https://images.unsplash.com/photo-1552069335-a7ba538185c7?q=80&w=1887&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                    <div class="movie-card__overlay">
+                        <h3 class="movie-card__title">Orbital</h3>
+                    </div>
                 </div>
-                <button type="submit" class="btn">Yadda Saxla</button>
+                <div class="movie-card">
+                    <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop" alt="Movie Title" class="movie-card__img">
+                    <div class="movie-card__overlay">
+                        <h3 class="movie-card__title">The Enigma</h3>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section class="auth-page">
+            <form class="auth-form">
+                <h2 class="auth-form__title">Welcome Back</h2>
+                <div class="form-group">
+                    <input type="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+                <p class="auth-form__switch">
+                    New to Cineflux? <a href="#">Sign up now</a>.
+                </p>
             </form>
+        </section>
+        
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__social">
+                <a href="#"><i class="ri-facebook-circle-fill"></i></a>
+                <a href="#"><i class="ri-twitter-x-line"></i></a>
+                <a href="#"><i class="ri-instagram-line"></i></a>
+                <a href="#"><i class="ri-youtube-fill"></i></a>
+            </div>
+            <ul class="footer__links">
+                <li><a href="#" class="footer__link">FAQ</a></li>
+                <li><a href="#" class="footer__link">Help Center</a></li>
+                <li><a href="#" class="footer__link">Terms of Use</a></li>
+                <li><a href="#" class="footer__link">Privacy</a></li>
+                <li><a href="#" class="footer__link">Contact Us</a></li>
+            </ul>
+            <p class="footer__copyright">
+                &copy; 2025 Cineflux. All Rights Reserved. A concept design.
+            </p>
         </div>
-    </div>
+    </footer>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        
-        // ================== 1. TƏTBİQİN VƏZİYYƏTİ (STATE MANAGEMENT) ==================
-        let currentUser = null;
-        let questions = [];
-        let lessons = [];
+        document.addEventListener('DOMContentLoaded', function() {
+            const navMenu = document.getElementById('nav-menu');
+            const navToggle = document.getElementById('nav-toggle');
+            const navClose = document.getElementById('nav-close'); // Assuming you'd have a close button inside the menu
 
-        // --- Elementlərin seçilməsi ---
-        const loginScreen = document.getElementById('loginScreen');
-        const appContainer = document.getElementById('appContainer');
-        const loginAsTeacherBtn = document.getElementById('loginAsTeacher');
-        const loginAsStudentBtn = document.getElementById('loginAsStudent');
-        const logoutButton = document.getElementById('logoutButton');
-        const hamburgerMenu = document.getElementById('hamburgerMenu');
-        const navLinks = document.getElementById('navLinks');
-        
-        // ================== 2. MƏLUMATLARIN İDARƏ EDİLMƏSİ (LOCALSTORAGE) ==================
-
-        // --- Məlumatları localStorage'dan yükləyən funksiya ---
-        const loadData = () => {
-            const savedUser = JSON.parse(localStorage.getItem('currentUser'));
-            const savedQuestions = JSON.parse(localStorage.getItem('questions'));
-            const savedLessons = JSON.parse(localStorage.getItem('lessons'));
-
-            if (savedQuestions) {
-                questions = savedQuestions;
-            } else {
-                // İlkin nümunə suallar
-                questions = [
-                    { id: 1, text: 'Günəş sistemində ən böyük planet hansıdır?', type: 'mcq', answers: ['Yer', 'Mars', 'Yupiter', 'Saturn'], correctAnswer: 'Yupiter' },
-                    { id: 2, text: 'Hüceyrənin "enerji stansiyası" ___ adlanır.', type: 'fill', answers: [], correctAnswer: 'Mitoxondri' },
-                    { id: 3, text: 'Fransanın paytaxtı haradır?', type: 'mcq', answers: ['Berlin', 'Madrid', 'Paris', 'Roma'], correctAnswer: 'Paris' },
-                ];
+            // Show menu
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('show-menu');
+                    // Change icon to 'close' when menu is open
+                    navToggle.innerHTML = navMenu.classList.contains('show-menu') 
+                        ? '<i class="ri-close-line"></i>' 
+                        : '<i class="ri-menu-line"></i>';
+                });
             }
 
-            if (savedLessons) {
-                lessons = savedLessons;
-            } else {
-                 // İlkin nümunə dərslər
-                lessons = [
-                    { id: 1, title: 'Biologiya 101', date: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 2, title: 'Cəbr II', date: new Date(new Date().getTime() + 4 * 24 * 60 * 60 * 1000).toISOString() }
-                ];
-            }
-            
-            if (savedUser) {
-                currentUser = savedUser;
-                showApp();
-            } else {
-                showLogin();
-            }
-        };
-
-        // --- Məlumatları localStorage'da saxlamaq ---
-        const saveData = () => {
-            localStorage.setItem('questions', JSON.stringify(questions));
-            localStorage.setItem('lessons', JSON.stringify(lessons));
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        };
-        
-        // ================== 3. GÖRÜNÜŞÜN İDARƏ EDİLMƏSİ (UI/RENDER FUNCTIONS) ==================
-
-        const showLogin = () => {
-            loginScreen.classList.remove('hidden');
-            appContainer.classList.add('hidden');
-        };
-
-        const showApp = () => {
-            loginScreen.classList.add('hidden');
-            appContainer.classList.remove('hidden');
-            renderUIForRole();
-            renderAll();
-        };
-
-        // --- Roluna görə interfeysi dəyişən funksiya ---
-        const renderUIForRole = () => {
-            const userRole = currentUser.role;
-            document.querySelectorAll('.teacher-only, .student-only').forEach(el => el.classList.add('hidden'));
-            if (userRole === 'teacher') {
-                document.querySelectorAll('.teacher-only').forEach(el => el.classList.remove('hidden'));
-            } else {
-                document.querySelectorAll('.student-only').forEach(el => el.classList.remove('hidden'));
-            }
-            // Profil məlumatlarını yenilə
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileRole').textContent = userRole === 'teacher' ? 'Müəllim' : 'Tələbə';
-            document.getElementById('profileEmail').textContent = currentUser.email;
-        };
-
-        // --- Bütün dinamik hissələri yenidən render etmək ---
-        const renderAll = () => {
-            if(currentUser.role === 'teacher') renderQuestionsTable();
-            if(currentUser.role === 'student') renderExam();
-            renderLessons();
-        };
-
-        // --- Suallar cədvəlini render etmək ---
-        const renderQuestionsTable = () => {
-            const tableBody = document.getElementById('questionsTableBody');
-            tableBody.innerHTML = '';
-            questions.forEach(q => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td data-label="Sual Mətni">${q.text.substring(0, 50)}...</td>
-                    <td data-label="Növü">${q.type.toUpperCase()}</td>
-                    <td data-label="Düzgün Cavab">${q.correctAnswer}</td>
-                    <td data-label="Əməliyyatlar">
-                        <button class="btn btn-danger" onclick="deleteQuestion(${q.id})">Sil</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+            // Optional: Close menu when a link is clicked
+            const navLinks = document.querySelectorAll('.nav__link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('show-menu')) {
+                        navMenu.classList.remove('show-menu');
+                        navToggle.innerHTML = '<i class="ri-menu-line"></i>';
+                    }
+                });
             });
-        };
-        
-        // --- Dərsləri render etmək ---
-        const renderLessons = () => {
-            const listContainer = document.getElementById('lessonsList');
-            listContainer.innerHTML = '';
-            if (lessons.length === 0) {
-                listContainer.innerHTML = '<p>Heç bir dərs planlanmayıb.</p>';
-                return;
-            }
-            lessons
-                .sort((a,b) => new Date(a.date) - new Date(b.date))
-                .forEach(lesson => {
-                const lessonDate = new Date(lesson.date);
-                const formattedDate = `${lessonDate.toLocaleDateString('az-AZ')} @ ${lessonDate.toLocaleTimeString('az-AZ', {hour: '2-digit', minute:'2-digit'})}`;
-                const item = document.createElement('div');
-                item.className = 'card';
-                item.innerHTML = `
-                    <h4>${lesson.title}</h4>
-                    <p>${formattedDate}</p>
-                    ${currentUser.role === 'teacher' ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteLesson(${lesson.id})">Ləğv Et</button>` : ''}
-                `;
-                listContainer.appendChild(item);
-            });
-        };
-        
-        // --- İmtahanı render etmək ---
-        const renderExam = () => {
-            const examContainer = document.getElementById('examContainer');
-            examContainer.innerHTML = '';
-            const examForm = document.createElement('form');
-            examForm.id = 'examForm';
-            
-            questions.forEach((q, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question';
-                let optionsHTML = '';
-                if (q.type === 'mcq') {
-                    optionsHTML = `<ul class="options-list">`;
-                    q.answers.forEach(answer => {
-                        optionsHTML += `<li><label><input type="radio" name="q${q.id}" value="${answer}" required> ${answer}</label></li>`;
-                    });
-                    optionsHTML += `</ul>`;
-                } else if (q.type === 'fill') {
-                    optionsHTML = `<div class="formGroup"><input type="text" name="q${q.id}" placeholder="Cavabınızı yazın" required></div>`;
-                }
-                questionDiv.innerHTML = `<p>${index + 1}. ${q.text}</p>${optionsHTML}`;
-                examForm.appendChild(questionDiv);
-            });
-            
-            const submitButton = document.createElement('button');
-            submitButton.type = 'submit';
-            submitButton.className = 'btn';
-            submitButton.textContent = 'İmtahanı Bitir';
-            examForm.appendChild(submitButton);
 
-            examContainer.appendChild(examForm);
-            
-            examForm.addEventListener('submit', submitExam);
-        };
-
-        // ================== 4. FUNKSİONALLIQ VƏ HADİSƏLƏR (EVENT LISTENERS) ==================
-        
-        // --- Giriş düymələri ---
-        loginAsTeacherBtn.addEventListener('click', () => {
-            currentUser = { name: "Aynurə Məmmədova", email: "a.mammadova@edu.az", role: 'teacher' };
-            saveData();
-            showApp();
-        });
-
-        loginAsStudentBtn.addEventListener('click', () => {
-            currentUser = { name: "Orxan Əliyev", email: "o.aliyev@edu.az", role: 'student' };
-            saveData();
-            showApp();
-        });
-
-        // --- Çıxış ---
-        logoutButton.addEventListener('click', () => {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showLogin();
-        });
-
-        // --- Mobil naviqasiya ---
-        hamburgerMenu.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburgerMenu.classList.toggle('toggle');
-        });
-        document.querySelectorAll('.navLinks a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    hamburgerMenu.classList.remove('toggle');
+            // Change header background on scroll
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.header');
+                if (window.scrollY >= 50) {
+                    header.style.background = 'rgba(11, 23, 42, 0.9)';
+                } else {
+                    header.style.background = 'rgba(11, 23, 42, 0.7)';
                 }
             });
         });
-
-        // --- Sual əlavə etmə modalı ---
-        const modal = document.getElementById('questionModal');
-        document.getElementById('addQuestionBtn').addEventListener('click', () => modal.classList.remove('hidden'));
-        document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.add('hidden'));
-        window.addEventListener('click', (event) => {
-            if (event.target == modal) modal.classList.add('hidden');
-        });
-
-        // --- Sual forması ---
-        document.getElementById('questionForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newQuestion = {
-                id: Date.now(),
-                text: document.getElementById('questionText').value,
-                type: document.getElementById('questionType').value,
-                answers: document.getElementById('questionAnswers').value.split('\n').filter(ans => ans.trim() !== ''),
-                correctAnswer: document.getElementById('correctAnswer').value.trim()
-            };
-            questions.push(newQuestion);
-            saveData();
-            renderQuestionsTable();
-            modal.classList.add('hidden');
-            e.target.reset();
-        });
-
-        // --- Dərs əlavə etmə forması ---
-        document.getElementById('addLessonForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newLesson = {
-                id: Date.now(),
-                title: document.getElementById('lessonTitle').value,
-                date: document.getElementById('lessonDate').value
-            };
-            lessons.push(newLesson);
-            saveData();
-            renderLessons();
-            e.target.reset();
-        });
-
-        // --- İmtahanı yoxlamaq ---
-        const submitExam = (e) => {
-            e.preventDefault();
-            let score = 0;
-            const formData = new FormData(e.target);
-
-            for (let [key, value] of formData.entries()) {
-                const questionId = parseInt(key.replace('q', ''));
-                const question = questions.find(q => q.id === questionId);
-                
-                // Düzgün cavabın kiçik/böyük hərfə həssas olmaması üçün
-                if (question && question.correctAnswer.toLowerCase() === value.toLowerCase()) {
-                    score++;
-                }
-            }
-            
-            document.getElementById('examContainer').classList.add('hidden');
-            const resultCard = document.getElementById('examResultCard');
-            document.getElementById('examScore').textContent = `Siz ${questions.length} sualdan ${score} düzgün cavab verdiniz. Nəticəniz: ${((score / questions.length) * 100).toFixed(2)}%`;
-            resultCard.classList.remove('hidden');
-        };
-
-        // ================== 5. QLOBAL FUNKSİYALAR (Pəncərədən çağrıla bilən) ==================
-        // CRUD əməliyyatları üçün funksiyaları qlobal edirik ki, HTML-dən onclick ilə çağırıla bilsin.
-        
-        window.deleteQuestion = (id) => {
-            if(confirm("Bu sualı silmək istədiyinizə əminsiniz?")) {
-                questions = questions.filter(q => q.id !== id);
-                saveData();
-                renderQuestionsTable();
-            }
-        };
-
-        window.deleteLesson = (id) => {
-            if(confirm("Bu dərsi ləğv etmək istədiyinizə əminsiniz?")) {
-                lessons = lessons.filter(l => l.id !== id);
-                saveData();
-                renderLessons();
-            }
-        };
-
-        // --- Tətbiqi Başlatmaq ---
-        loadData();
-    });
     </script>
 </body>
 </html>
