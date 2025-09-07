@@ -3,604 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farhad | Frontend Developer</title>
+    <title>Farhad | Yaratıcı Frontend Developer</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@300;400&display=swap');
 
         :root {
-            --primary-color: #00aaff;
-            --secondary-color: #0a192f;
-            --light-color: #ccd6f6;
-            --dark-color: #8892b0;
-            --background-glow: radial-gradient(circle at center, rgba(0, 170, 255, 0.2) 0%, rgba(0, 170, 255, 0) 70%);
+            --background-color: #f0f0f0;
+            --text-color: #1a1a1a;
+            --accent-color: #ff0055; /* Canlı bir vurgu rengi */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            cursor: none; /* Özel imleç kullanılacak */
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--secondary-color);
-            color: var(--light-color);
-            overflow-x: hidden;
-        }
-
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: rgba(10, 25, 47, 0.85);
-            backdrop-filter: blur(10px);
-            transition: top 0.3s;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        .logo span {
-            color: var(--light-color);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: var(--light-color);
-            font-weight: 400;
-            transition: color 0.3s;
-            position: relative;
-            padding: 5px 0;
-        }
-
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--primary-color);
-            transition: width 0.3s ease-in-out;
-        }
-
-        nav ul li a:hover {
-            color: var(--primary-color);
-        }
-
-        nav ul li a:hover::after {
-            width: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow: hidden; /* JavaScript ile kaydırma kontrol edilecek */
+            height: 100vh;
+            width: 100vw;
         }
         
-        /* Hero Section */
-        #hero {
+        /* Özel İmleç */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--text-color);
+            border-radius: 50%;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            z-index: 9999;
+        }
+
+        .cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 0, 85, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        /* İmleç İzi (Trail) */
+        .trail-image {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9990;
+            width: 200px;
+            height: auto;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+            transition: opacity 0.8s, transform 0.8s;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Ana Konteyner */
+        .main-container {
+            display: flex;
+            width: 400vw; /* 4 bölüm * 100vw */
+            height: 100vh;
+            will-change: transform;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        section {
+            width: 100vw;
             height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-            padding-top: 60px;
+            align-items: center;
+            padding: 5rem;
+            flex-shrink: 0;
         }
 
-        .hero-content {
+        /* Bölüm 1: Giriş */
+        #intro {
+            text-align: left;
+        }
+        .intro-content {
             max-width: 800px;
         }
-        
-        .hero-content h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--light-color);
+        .intro-content h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8vw;
+            line-height: 1.1;
+            margin: 0;
+            letter-spacing: -3px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: text-reveal 1s 0.5s forwards;
         }
-        
-        .hero-content h1 .name {
-            color: var(--primary-color);
-            display: block;
+        .intro-content .name {
+            color: var(--accent-color);
         }
-
-        .hero-content p {
+        .intro-content p {
             font-size: 1.5rem;
-            color: var(--dark-color);
+            font-weight: 300;
             margin-top: 1rem;
-            margin-bottom: 2rem;
+            max-width: 500px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: text-reveal 1s 0.8s forwards;
         }
-        
-        .cta-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            border: 2px solid var(--primary-color);
-            border-radius: 5px;
-            color: var(--primary-color);
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes text-reveal {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(0);}
+            40% {transform: translateX(-10px);}
+            60% {transform: translateX(-5px);}
+        }
+
+        /* Header / Navigasyon */
+        .header-nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        .header-nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .header-nav a {
+            font-family: 'Montserrat', sans-serif;
             text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s, color 0.3s;
-            background: transparent;
-        }
-
-        .cta-button:hover {
-            background-color: var(--primary-color);
-            color: var(--secondary-color);
-        }
-
-        /* Section Styling */
-        section {
-            padding: 6rem 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 4rem;
-            font-weight: 700;
+            color: var(--text-color);
+            font-size: 1rem;
             position: relative;
+            padding: 10px;
         }
-
-        .section-title::after {
+        .header-nav a:after {
             content: '';
             position: absolute;
-            width: 80px;
-            height: 4px;
-            background-color: var(--primary-color);
-            bottom: -15px;
+            width: 0%;
+            height: 2px;
+            background-color: var(--accent-color);
+            bottom: -5px;
             left: 50%;
             transform: translateX(-50%);
+            transition: width 0.3s;
         }
-        
-        /* About Section */
-        #about .about-content {
+        .header-nav a.active:after {
+            width: 100%;
+        }
+
+        /* Bölüm 2: Projeler */
+        .project-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-item {
+            padding: 2rem 0;
+            border-bottom: 2px solid #ddd;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 3rem;
+            transition: background-color 0.4s;
         }
-
-        .about-text {
-            flex-basis: 60%;
+        .project-item:hover {
+            background-color: rgba(0,0,0,0.05);
         }
-
-        .about-text p {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            color: var(--dark-color);
+        .project-item h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5vw;
         }
-
+        .project-item span {
+            font-size: 1rem;
+            font-weight: 300;
+            color: #666;
+        }
+        .project-item img {
+            display: none; /* JavaScript ile imleç izinde gösterilecek */
+        }
+        
+        /* Bölüm 3: Hakkımda */
+        #about .content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
         .about-image {
-            flex-basis: 35%;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .about-image img {
-            width: 100%;
+            width: 300px;
+            height: 400px;
+            flex-shrink: 0;
+            background-image: url('https://via.placeholder.com/300x400'); /* Placeholder */
+            background-size: cover;
             border-radius: 10px;
-            border: 3px solid var(--primary-color);
-            transition: transform 0.5s;
+        }
+        .about-text h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .about-text p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            max-width: 50ch;
         }
 
-        .about-image:hover img {
-            transform: rotateY(15deg) rotateX(5deg) scale(1.05);
-        }
-
-        /* Skills Section */
-        #skills .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1.5rem;
+        /* Bölüm 4: İletişim */
+        #contact .content {
             text-align: center;
         }
-
-        .skill-item {
-            background: rgba(204, 214, 246, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
+        #contact h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7vw;
+            line-height: 1.2;
         }
-        
-        .skill-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .skill-item i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .skill-item p {
-            font-weight: 600;
-            color: var(--light-color);
-        }
-
-        /* Projects Section */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .project-card {
-            background-color: #112240;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            cursor: pointer;
-            border: 1px solid #1e3a5f;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--background-glow);
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-        }
-
-        .project-card:hover {
-            transform: translateY(-15px) scale(1.03);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: opacity 0.3s;
-        }
-
-        .project-info {
-            padding: 1.5rem;
-        }
-
-        .project-info h3 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .project-info p {
-            color: var(--dark-color);
-            margin-bottom: 1rem;
-        }
-        
-        .project-links a {
-            color: var(--light-color);
+        #contact a {
+            color: var(--accent-color);
             text-decoration: none;
-            margin-right: 1rem;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .project-links a:hover {
-            color: var(--primary-color);
-        }
-
-        /* Contact Section */
-        #contact .contact-content {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        #contact p {
-            font-size: 1.2rem;
-            color: var(--dark-color);
-            margin-bottom: 2rem;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            background: #0a1421;
-            color: var(--dark-color);
-        }
-
-        /* Scroll Animations */
-        .reveal {
             position: relative;
-            transform: translateY(150px);
-            opacity: 0;
-            transition: 1s all ease;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        #contact a:hover {
+            transform: skewX(-15deg);
+        }
+        #contact p {
+            margin-top: 2rem;
+            font-size: 1.2rem;
         }
 
-        .reveal.active {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        /* Responsive */
+        /* Mobil Cihazlar İçin Ayarlar */
         @media (max-width: 768px) {
-            nav ul {
-                display: none; /* Basitlik için mobil menü eklenmedi */
+            body {
+                overflow: auto;
+                cursor: auto;
             }
-            .hero-content h1 {
-                font-size: 2.5rem;
+            .cursor, .trail-image {
+                display: none;
             }
-            .hero-content p {
-                font-size: 1.2rem;
-            }
-            #about .about-content {
+            .main-container {
+                width: 100vw;
                 flex-direction: column;
+                transform: none !important;
+                height: auto;
             }
+            section {
+                width: 100vw;
+                height: auto;
+                min-height: 100vh;
+                padding: 4rem 2rem;
+            }
+            .intro-content h1 { font-size: 15vw; }
+            .project-item h2 { font-size: 10vw; }
+            #about .content { flex-direction: column; }
+            .about-image { width: 80vw; height: 100vw; }
+            #contact h2 { font-size: 12vw; }
         }
+
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <canvas id="particles-js"></canvas>
+    <div class="cursor"></div>
 
-    <header id="header">
-        <a href="#" class="logo">F<span>.</span></a>
-        <nav>
-            <ul>
-                <li><a href="#hero">Ana Sayfa</a></li>
-                <li><a href="#about">Hakkımda</a></li>
-                <li><a href="#skills">Yetenekler</a></li>
-                <li><a href="#projects">Projeler</a></li>
-                <li><a href="#contact">İletişim</a></li>
-            </ul>
-        </nav>
+    <header class="header-nav">
+        <ul>
+            <li><a href="#intro" class="nav-link magnetic-link active" data-index="0">01</a></li>
+            <li><a href="#projects" class="nav-link magnetic-link" data-index="1">02</a></li>
+            <li><a href="#about" class="nav-link magnetic-link" data-index="2">03</a></li>
+            <li><a href="#contact" class="nav-link magnetic-link" data-index="3">04</a></li>
+        </ul>
     </header>
 
-    <section id="hero">
-        <div class="container">
-            <div class="hero-content">
-                <p style="color: var(--primary-color); font-size: 1.2rem;">Merhaba, benim adım</p>
-                <h1 class="reveal"><span class="name">Farhad</span>Frontend Developer.</h1>
-                <p class="reveal">Harika dijital deneyimler yaratan, yaratıcı ve detay odaklı bir frontend geliştiricisiyim.</p>
-                <a href="#projects" class="cta-button reveal">Çalışmalarımı Gör</a>
+    <main class="main-container">
+        
+        <section id="intro">
+            <div class="intro-content">
+                <h1>Merhaba, ben <span class="name">Farhad</span>.</h1>
+                <p>Kullanıcı deneyimini sanatla birleştiren, interaktif ve unutulmaz web siteleri yaratıyorum.</p>
             </div>
-        </div>
-    </section>
+            <div class="scroll-indicator">Keşfetmek için kaydır →</div>
+        </section>
 
-    <section id="about" class="reveal">
-        <div class="container">
-            <h2 class="section-title">Hakkımda</h2>
-            <div class="about-content">
+        <section id="projects">
+            <div class="project-list">
+                <div class="project-item" data-image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop">
+                    <h2>E-Ticaret Platformu</h2>
+                    <span>React / Redux</span>
+                </div>
+                 <div class="project-item" data-image="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop">
+                    <h2>Görev Yönetim Aracı</h2>
+                    <span>Vue.js / Firebase</span>
+                </div>
+                 <div class="project-item" data-image="https://images.unsplash.com/photo-1504639725590-775b6d045d16?q=80&w=800&auto=format&fit=crop">
+                    <h2>3D Portföy Sitesi</h2>
+                    <span>Three.js / GSAP</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="content">
+                <div class="about-image"></div>
                 <div class="about-text">
-                    <p>
-                        Merhaba! Ben Farhad. Kod yazmaya olan tutkumla, estetik ve kullanıcı dostu arayüzler oluşturuyorum. 
-                        Modern web teknolojilerini kullanarak, pürüzsüz ve etkileşimli web siteleri ve uygulamalar geliştirmekten keyif alıyorum.
-                        Her yeni projede kendimi daha da geliştirerek, en iyi kullanıcı deneyimini sunmayı hedefliyorum. 
-                        Temiz, sürdürülebilir ve performanslı kod yazmak benim için bir önceliktir.
-                    </p>
-                </div>
-                <div class="about-image">
-                    <img src="https://via.placeholder.com/400" alt="Farhad">
+                    <h2>Ben Kimim?</h2>
+                    <p>Kod sadece bir araç değil, aynı zamanda bir ifade biçimidir. Ben Farhad, estetiği ve fonksiyonelliği bir araya getiren bir frontend geliştiricisiyim. Piksel mükemmelliğine olan takıntım ve akıcı animasyonlara olan tutkumla, markaların dijital dünyada parlamasını sağlıyorum.</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="skills" class="reveal">
-        <div class="container">
-            <h2 class="section-title">Yeteneklerim</h2>
-            <div class="skills-grid">
-                <div class="skill-item"><i class="fab fa-html5"></i><p>HTML5</p></div>
-                <div class="skill-item"><i class="fab fa-css3-alt"></i><p>CSS3</p></div>
-                <div class="skill-item"><i class="fab fa-js-square"></i><p>JavaScript</p></div>
-                <div class="skill-item"><i class="fab fa-react"></i><p>React</p></div>
-                <div class="skill-item"><i class="fab fa-vuejs"></i><p>Vue.js</p></div>
-                <div class="skill-item"><i class="fab fa-angular"></i><p>Angular</p></div>
-                <div class="skill-item"><i class="fab fa-sass"></i><p>SASS</p></div>
-                <div class="skill-item"><i class="fab fa-git-alt"></i><p>Git</p></div>
+        <section id="contact">
+            <div class="content">
+                <h2>Bir fikriniz mi var? <br> <a href="mailto:farhad@ornek.com" class="magnetic-link">Hadi hayata geçirelim.</a></h2>
+                <p>farhad@ornek.com</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="projects" class="reveal">
-        <div class="container">
-            <h2 class="section-title">Projelerim</h2>
-            <div class="projects-grid">
-                <div class="project-card" onmousemove="moveGlow(event, this)">
-                    <img src="https://via.placeholder.com/600x400/00aaff/ffffff?text=Proje+1" alt="Proje 1" class="project-image">
-                    <div class="project-info">
-                        <h3>E-Ticaret Platformu</h3>
-                        <p>React ve Redux kullanarak geliştirdiğim modern ve hızlı bir e-ticaret sitesi.</p>
-                        <div class="project-links">
-                            <a href="#" target="_blank">Canlı Demo <i class="fas fa-external-link-alt"></i></a>
-                            <a href="#" target="_blank">GitHub <i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card" onmousemove="moveGlow(event, this)">
-                    <img src="https://via.placeholder.com/600x400/00aaff/ffffff?text=Proje+2" alt="Proje 2" class="project-image">
-                    <div class="project-info">
-                        <h3>Görev Yönetim Uygulaması</h3>
-                        <p>Vue.js ile geliştirilmiş, kullanıcı dostu arayüze sahip bir görev takip uygulaması.</p>
-                         <div class="project-links">
-                            <a href="#" target="_blank">Canlı Demo <i class="fas fa-external-link-alt"></i></a>
-                            <a href="#" target="_blank">GitHub <i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card" onmousemove="moveGlow(event, this)">
-                    <img src="https://via.placeholder.com/600x400/00aaff/ffffff?text=Proje+3" alt="Proje 3" class="project-image">
-                    <div class="project-info">
-                        <h3>Portföy Web Sitesi</h3>
-                        <p>Three.js ve GSAP kullanarak oluşturulmuş interaktif bir 3D portföy sitesi.</p>
-                         <div class="project-links">
-                            <a href="#" target="_blank">Canlı Demo <i class="fas fa-external-link-alt"></i></a>
-                            <a href="#" target="_blank">GitHub <i class="fab fa-github"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </main>
 
-    <section id="contact" class="reveal">
-        <div class="container">
-             <div class="contact-content">
-                <h2 class="section-title">İletişime Geçin</h2>
-                <p>Yeni bir proje veya işbirliği için benimle iletişime geçmekten çekinmeyin. Fikirlerinizi hayata geçirmek için sabırsızlanıyorum!</p>
-                <a href="mailto:ornek@mail.com" class="cta-button">Merhaba De!</a>
-             </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Farhad. Tüm Hakları Saklıdır. Sevgiyle tasarlandı.</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        // Particles.js Config
-        particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Mobil kontrol
+            const isMobile = window.innerWidth <= 768;
+
+            if (!isMobile) {
+                // Özel İmleç
+                const cursor = document.querySelector('.cursor');
+                window.addEventListener('mousemove', e => {
+                    gsap.to(cursor, { duration: 0.3, x: e.clientX, y: e.clientY });
+                });
+
+                document.querySelectorAll('a, .project-item').forEach(el => {
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+                });
+
+                // Yatay Kaydırma
+                const container = document.querySelector('.main-container');
+                let currentScroll = 0;
+                let targetScroll = 0;
+                let ease = 0.075;
+
+                document.body.style.height = `${container.getBoundingClientRect().width}px`;
+                
+                window.addEventListener('wheel', (e) => {
+                    targetScroll += e.deltaY;
+                    targetScroll = Math.max(0, targetScroll);
+                    targetScroll = Math.min(window.innerWidth * 3, targetScroll);
+                });
+
+                function smoothScroll() {
+                    currentScroll += (targetScroll - currentScroll) * ease;
+                    container.style.transform = `translateX(-${currentScroll}px)`;
+                    requestAnimationFrame(smoothScroll);
+                }
+                smoothScroll();
+
+                // Navigasyon
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const index = parseInt(e.target.dataset.index);
+                        targetScroll = window.innerWidth * index;
+                    });
+                });
+
+                // Aktif Navigasyon Linkini Güncelleme
+                window.addEventListener('scroll', () => { // Scroll event'i yatay kaydırma için de kullanılabilir
+                    let currentIndex = Math.round(targetScroll / window.innerWidth);
+                    navLinks.forEach((link, index) => {
+                        if(index === currentIndex) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                });
+
+                // Manyetik Butonlar
+                const magneticLinks = document.querySelectorAll('.magnetic-link');
+                magneticLinks.forEach(link => {
+                    const item = link;
+                    item.addEventListener('mousemove', function(e) {
+                        const { clientX, clientY } = e;
+                        const { left, top, width, height } = item.getBoundingClientRect();
+                        const x = (clientX - (left + width / 2)) * 0.4;
+                        const y = (clientY - (top + height / 2)) * 0.4;
+                        gsap.to(item, { x: x, y: y, duration: 0.5, ease: "power2.out" });
+                    });
+                    item.addEventListener('mouseleave', function() {
+                        gsap.to(item, { x: 0, y: 0, duration: 0.5, ease: "power2.out" });
+                    });
+                });
+
+                // İmleç İzleme (Trail) Efekti
+                const projectItems = document.querySelectorAll('.project-item');
+                let trailImages = [];
+                let imageIndex = 0;
+                const MAX_IMAGES = 10;
+
+                for (let i = 0; i < MAX_IMAGES; i++) {
+                    let div = document.createElement('div');
+                    let img = document.createElement('img');
+                    div.appendChild(img);
+                    div.classList.add('trail-image');
+                    document.body.appendChild(div);
+                    trailImages.push(div);
+                }
+
+                window.addEventListener('mousemove', (e) => {
+                    let hoveredProject = Array.from(projectItems).find(item => item.matches(':hover'));
+                    if (hoveredProject) {
+                        const imgElement = trailImages[imageIndex];
+                        imgElement.children[0].src = hoveredProject.dataset.image;
+
+                        gsap.set(imgElement, {
+                            top: e.clientY + 'px',
+                            left: e.clientX + 'px',
+                        });
+
+                        gsap.fromTo(imgElement, {
+                            opacity: 1,
+                            transform: 'translate(-50%, -50%) scale(0.5)',
+                            rotation: Math.random() * 20 - 10
+                        }, {
+                            opacity: 0,
+                            transform: 'translate(-50%, -50%) scale(1)',
+                            duration: 1.5,
+                            ease: "power2.out"
+                        });
+                        
+                        imageIndex = (imageIndex + 1) % MAX_IMAGES;
                     }
-                },
-                "color": {
-                    "value": "#00aaff"
-                },
-                "shape": {
-                    "type": "circle",
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#8892b0",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_opacity": 1
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    }
-                }
-            },
-            "retina_detect": true
-        });
-
-        // Scroll Reveal Animation
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                } else {
-                    reveals[i].classList.remove("active");
-                }
+                });
             }
-        }
-        window.addEventListener("scroll", reveal);
-        reveal(); // initial check
-
-        // Hide header on scroll down, show on scroll up
-        let lastScrollTop = 0;
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop) {
-                header.style.top = '-80px';
-            } else {
-                header.style.top = '0';
-            }
-            lastScrollTop = scrollTop;
         });
-
-        // Project Card Glow Effect
-        function moveGlow(event, card) {
-            const rect = card.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            
-            card.style.setProperty('--background-glow', `radial-gradient(circle at ${x}px ${y}px, rgba(0, 170, 255, 0.25) 0%, rgba(0, 170, 255, 0) 60%)`);
-        }
-
     </script>
 </body>
 </html>
