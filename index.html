@@ -2,65 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Trello-like Kanban Board</title>
+  <title>Advanced Trello-like Kanban App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* ---------- Global Styles ---------- */
+    /* Global & Theme */
+    :root {
+      --bg: #f5f5f5;
+      --text: #333;
+      --card: #fff;
+      --primary: #1976d2;
+      --label-colors: #e57373,#81c784,#64b5f6,#ffb74d;
+    }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+      margin:0;
+      font-family:sans-serif;
       background: var(--bg);
       color: var(--text);
       transition: background 0.3s, color 0.3s;
     }
-    :root {
-      --bg: #f4f4f4;
-      --text: #333;
-      --card: #fff;
-      --primary: #1976d2;
-    }
     body.dark {
       --bg: #1e1e1e;
-      --text: #f4f4f4;
+      --text: #f0f0f0;
       --card: #2a2a2a;
       --primary: #90caf9;
     }
-    h2 { margin: 10px; }
-    button { cursor: pointer; }
-    .hidden { display: none; }
+    .hidden {display:none;}
 
-    /* ---------- Auth Forms ---------- */
-    .auth-container {
-      max-width: 350px;
-      margin: 50px auto;
-      padding: 20px;
-      background: var(--card);
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .auth-container input, .auth-container button {
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    /* Auth */
+    .auth, .modal {max-width:360px; margin:60px auto; background:var(--card); padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+    .auth input, .auth button, .modal input, .modal textarea, .modal button {width:100%; margin:8px 0; padding:12px; border:1px solid #ccc; border-radius:6px;}
+
+    /* Board Layout */
+    .board { display:flex; gap:12px; padding:12px; overflow-x:auto; height:calc(100vh - 140px); }
+    .list { flex:1 1 280px; background:var(--card); border-radius:8px; padding:12px; display:flex; flex-direction:column; }
+    .list h3 { margin-top:0; text-align:center; }
+    .card { background:var(--bg); padding:10px; border-radius:6px; margin:6px 0; cursor:grab; position:relative; }
+    .card.dragging { opacity:0.5; }
+    .label { display:inline-block; width:12px; height:12px; border-radius:2px; margin-right:4px; }
+
+    /* FAB */
+    .fab { position:fixed; bottom:80px; right:20px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:56px; height:56px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 6px rgba(0,0,0,0.3); }
+
+    /* Bottom Nav */
+    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--card); display:flex; justify-content:space-around; padding:10px 0; box-shadow:0 -1px 4px rgba(0,0,0,0.1); }
+    .bottom-nav button { background:none; border:none; color:var(--text); font-size:13px; }
+
+    /* Modal */
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; }
+    .modal-content { background:var(--card); padding:20px; border-radius:8px; width:300px; }
+    .modal textarea { resize:none; height:60px; }
+  </style>
+</head>
+<body>
+  <!-- Auth -->
+  <div id="auth" class="auth">
+    <h2>Login / Register</h2>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app" class="hidden">
+    <div style="padding:12px; display:flex; justify-content:space-between; align-items:center;">
+      <button id="logoutBtn">Logout</button>
+      <button id="modeToggle">🌙</button>
+    </div>
+    <div class="board" id="board"></div>
+    <button class="fab" id="addTaskBtn">＋</button>
+    <div class="bottom-nav">
+      <button>Home</button>
+      <button>My Tasks</button>
+      <button>Notifications</button>
+      <button>Profile</button>
+    </div>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div id="taskModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>New Task</h3>
+      <input id="taskTitle" placeholder="Title">
+      <textarea id="taskDesc" placeholder="Description"></textarea>
+      <label>Label:
+        <select id="taskLabel">
+          <option value="">None</option>
+          <option value="0">Red</option>
+          <option value="1">Green</option>
+          <option value="2">Blue</option>
+          <option value="3">Yellow</option>
+        </select>
+      </label>
+      <input id="taskFile" type="file">
+      <button id="saveTaskBtn">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js"></script>
+
+  <script>
+    // Firebase Initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyCT7Ih36xNcp3rMgFB17OyleTh-kaeBBZk",
+      authDomain: "weightoff-b7916.firebaseapp.com",
+      databaseURL: "https://weightoff-b7916-default-rtdb.firebaseio.com",
+      projectId: "weightoff-b7916",
+      storageBucket: "weightoff-b7916.appspot.com",
+      messagingSenderId: "623909660439",
+      appId: "1:623909660439:web:29d5305a401c84bfd2b952",
+      measurementId: "G-006DGJR805"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // DOM Elements
+    const authDiv = document.getElementById('auth');
+    const appDiv = document.getElementById('app');
+    const boardDiv = document.getElementById('board');
+    const taskModal = document.getElementById('taskModal');
+    const taskTitle = document.getElementById('taskTitle');
+    const taskDesc = document.getElementById('taskDesc');
+    const taskLabel = document.getElementById('taskLabel');
+    const taskFile = document.getElementById('taskFile');
+    const modeToggle = document.getElementById('modeToggle');
+
+    // Auth Handlers
+    document.getElementById('loginBtn').onclick = () => auth.signInWithEmailAndPassword(email.value, password.value).catch(e => alert(e.message));
+    document.getElementById('registerBtn').onclick = () => auth.createUserWithEmailAndPassword(email.value, password.value).catch(e => alert(e.message));
+    document.getElementById('logoutBtn').onclick = () => auth.signOut();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        authDiv.classList.add('hidden');
+        appDiv.classList.remove('hidden');
+        loadBoard(user.uid);
+      } else {
+        authDiv.classList.remove('hidden');
+        appDiv.classList.add('hidden');
+      }
+    });
+
+    // Dark Mode Toggle
+    modeToggle.onclick = () => { document.body.classList.toggle('dark'); modeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; };
+
+    // Board Setup
+    const lists = ["To Do", "In Progress", "Done"];
+    function renderBoard() {
+      boardDiv.innerHTML = '';
+      lists.forEach(list => {
+        const col = document.createElement('div');
+        col.className = 'list';
+        col.dataset.list = list;
+        col.innerHTML = `<h3>${list}</h3>`;
+        col.ondragover = e => e.preventDefault();
+        col.ondrop = e => dropCard(e, list);
+        boardDiv.appendChild(col);
+      });
     }
 
-    /* ---------- Board Layout ---------- */
-    .board {
-      display: flex;
-      gap: 10px;
-      padding: 10px;
-      overflow-x: auto;
-      height: calc(100vh - 100px);
+    // Load and Sync
+    function loadBoard(uid) {
+      renderBoard();
+      db.collection('boards').doc(uid).collection('tasks')
+        .orderBy('createdAt', 'asc')
+        .onSnapshot(snapshot => {
+          renderBoard();
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.draggable = true;
+            card.ondragstart = e => { e.dataTransfer.setData('id', doc.id); card.classList.add('dragging'); };
+            card.ondragend = () => card.classList.remove('dragging');
+
+            const labelDot = d.label !== undefined ? `<span class="label" style="background:${getLabelColor(d.label)};"></span>` : '';
+            const fileLink = d.fileURL ? `<br><a href="${d.fileURL}" target="_blank">Attachment</a>` : '';
+
+            card.innerHTML = `
+              ${labelDot}<strong>${d.title}</strong><br>${d.description || ''}
+              ${fileLink}<br><small>${new Date(d.createdAt).toLocaleString()}</small>
+              <button style="position:absolute; top:8px; right:8px; background:red; color:#fff; border:none; border-radius:4px; cursor:pointer;" onclick="delTask('${uid}', '${doc.id}')">×</button>`;
+            const col = boardDiv.querySelector(`[data-list='${d.status}']`);
+            if (col) col.appendChild(card);
+          });
+        });
     }
-    .list {
-      flex: 1 1 300px;
-      background: var(--card);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
+
+    function getLabelColor(idx) {
+      const cols = getComputedStyle(document.documentElement).getPropertyValue('--label-colors').split(',');
+      return cols[idx] || '#ccc';
     }
-    .list h3 { text-align: center; }
-    .
+
+    // Card Operations
+    function delTask(uid, id) {
+      db.collection('boards').doc(uid).collection('tasks').doc(id).delete();
+    }
+    function dropCard(e, newList) {
+      const id = e.dataTransfer.getData('id');
+      const uid = auth.currentUser.uid;
+      db.collection('boards').doc(uid).collection('tasks').doc(id).update({ status: newList });
+    }
+
+    // Modal Handlers
+    document.getElementById('addTaskBtn').onclick = () => taskModal.classList.remove('hidden');
+    function closeModal() { taskModal.classList.add('hidden'); }
+    document.getElementById('saveTaskBtn').onclick = async () => {
+      const uid = auth.currentUser.uid;
+      let fileURL = null;
+      if (taskFile.files[0]) {
+        const file = taskFile.files[0];
+        const ref = storage.ref().child(`${uid}/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        fileURL = await ref.getDownloadURL();
+      }
+      await db.collection('boards').doc(uid).collection('tasks').add({
+        title: taskTitle.value,
+        description: taskDesc.value,
+        status: 'To Do',
+        createdAt: Date.now(),
+        label: taskLabel.value !== '' ? parseInt(taskLabel.value) : null,
+        fileURL
+      });
+      taskTitle.value = '';
+      taskDesc.value = '';
+      taskLabel.value = '';
+      taskFile.value = '';
+      closeModal();
+    };
+  </script>
+</body>
+</html>
