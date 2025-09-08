@@ -1,463 +1,879 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farhad | Yaratıcı Frontend Developer</title>
+    <title>KanbanFire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@300;400&display=swap');
-
+        /* ------------------- */
+        /* --- CSS Reset & Variables --- */
+        /* ------------------- */
         :root {
-            --background-color: #f0f0f0;
-            --text-color: #1a1a1a;
-            --accent-color: #ff0055; /* Canlı bir vurgu rengi */
+            --bg-primary: #f4f5f7;
+            --bg-secondary: #ffffff;
+            --text-primary: #172b4d;
+            --text-secondary: #5e6c84;
+            --border-color: #dfe1e6;
+            --accent-color: #0052cc;
+            --accent-hover: #0065ff;
+            --danger-color: #de350b;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.06);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .dark-mode {
+            --bg-primary: #1d2125;
+            --bg-secondary: #282e33;
+            --text-primary: #c1c9d2;
+            --text-secondary: #8c9bab;
+            --border-color: #444c56;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Özel imleç kullanılacak */
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            overflow: hidden; /* JavaScript ile kaydırma kontrol edilecek */
-            height: 100vh;
-            width: 100vw;
-        }
-        
-        /* Özel İmleç */
-        .cursor {
-            position: fixed;
-            width: 30px;
-            height: 30px;
-            border: 2px solid var(--text-color);
-            border-radius: 50%;
-            left: 0;
-            top: 0;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
-            z-index: 9999;
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .cursor.hovered {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(255, 0, 85, 0.2);
-            border-color: var(--accent-color);
-        }
-
-        /* İmleç İzi (Trail) */
-        .trail-image {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9990;
-            width: 200px;
-            height: auto;
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
-            transition: opacity 0.8s, transform 0.8s;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        /* Ana Konteyner */
-        .main-container {
-            display: flex;
-            width: 400vw; /* 4 bölüm * 100vw */
-            height: 100vh;
-            will-change: transform;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        section {
-            width: 100vw;
-            height: 100vh;
+        /* ------------------- */
+        /* --- Auth Page --- */
+        /* ------------------- */
+        #auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 5rem;
-            flex-shrink: 0;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Bölüm 1: Giriş */
-        #intro {
-            text-align: left;
-        }
-        .intro-content {
-            max-width: 800px;
-        }
-        .intro-content h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 8vw;
-            line-height: 1.1;
-            margin: 0;
-            letter-spacing: -3px;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: text-reveal 1s 0.5s forwards;
-        }
-        .intro-content .name {
-            color: var(--accent-color);
-        }
-        .intro-content p {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-top: 1rem;
-            max-width: 500px;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: text-reveal 1s 0.8s forwards;
-        }
-        .scroll-indicator {
-            position: absolute;
-            bottom: 3rem;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes text-reveal {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateX(0);}
-            40% {transform: translateX(-10px);}
-            60% {transform: translateX(-5px);}
-        }
-
-        /* Header / Navigasyon */
-        .header-nav {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-        }
-        .header-nav ul {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-        }
-        .header-nav a {
-            font-family: 'Montserrat', sans-serif;
-            text-decoration: none;
-            color: var(--text-color);
-            font-size: 1rem;
-            position: relative;
-            padding: 10px;
-        }
-        .header-nav a:after {
-            content: '';
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            background-color: var(--accent-color);
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s;
-        }
-        .header-nav a.active:after {
+        .auth-form-wrapper {
+            background-color: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
             width: 100%;
+            max-width: 400px;
         }
 
-        /* Bölüm 2: Projeler */
-        .project-list {
+        .auth-form-wrapper h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .form-toggle .toggle-link {
+            color: var(--accent-color);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .auth-error {
+            color: var(--danger-color);
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* ------------------- */
+        /* --- App Layout --- */
+        /* ------------------- */
+        #app-container {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        #theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+        
+        #logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        #logout-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .board {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        /* ------------------- */
+        /* --- Kanban Board & Cards --- */
+        /* ------------------- */
+
+        .list {
+            flex-shrink: 0;
             width: 100%;
             display: flex;
             flex-direction: column;
         }
-        .project-item {
-            padding: 2rem 0;
-            border-bottom: 2px solid #ddd;
-            width: 100%;
+
+        .list-header {
+            font-weight: 600;
+            padding: 0 8px 12px 8px;
+            color: var(--text-secondary);
+        }
+
+        .cards-container {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 8px;
+            flex-grow: 1;
+            min-height: 100px;
+            transition: background-color 0.2s;
+        }
+        
+        .list.drag-over .cards-container {
+            background-color: #dcdfe4; /* A neutral highlight */
+        }
+        .dark-mode .list.drag-over .cards-container {
+            background-color: #3a4149;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            box-shadow: var(--shadow);
+            cursor: grab;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .card.dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background-color 0.4s;
-        }
-        .project-item:hover {
-            background-color: rgba(0,0,0,0.05);
-        }
-        .project-item h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 5vw;
-        }
-        .project-item span {
-            font-size: 1rem;
-            font-weight: 300;
-            color: #666;
-        }
-        .project-item img {
-            display: none; /* JavaScript ile imleç izinde gösterilecek */
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
         
-        /* Bölüm 3: Hakkımda */
-        #about .content {
-            display: flex;
-            align-items: center;
-            gap: 4rem;
-        }
-        .about-image {
-            width: 300px;
-            height: 400px;
-            flex-shrink: 0;
-            background-image: url('https://via.placeholder.com/300x400'); /* Placeholder */
-            background-size: cover;
-            border-radius: 10px;
-        }
-        .about-text h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-        }
-        .about-text p {
-            line-height: 1.8;
-            font-size: 1.1rem;
-            max-width: 50ch;
-        }
-
-        /* Bölüm 4: İletişim */
-        #contact .content {
-            text-align: center;
-        }
-        #contact h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 7vw;
-            line-height: 1.2;
-        }
-        #contact a {
+        .card-attachment a {
             color: var(--accent-color);
             text-decoration: none;
-            position: relative;
-            display: inline-block;
-            transition: transform 0.3s;
         }
-        #contact a:hover {
-            transform: skewX(-15deg);
-        }
-        #contact p {
-            margin-top: 2rem;
-            font-size: 1.2rem;
+        .card-attachment a:hover {
+            text-decoration: underline;
         }
 
-        /* Mobil Cihazlar İçin Ayarlar */
-        @media (max-width: 768px) {
-            body {
-                overflow: auto;
-                cursor: auto;
+        .delete-card-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.2s, color 0.2s;
+        }
+
+        .card:hover .delete-card-btn {
+            opacity: 1;
+        }
+        
+        .delete-card-btn:hover {
+            color: var(--danger-color);
+        }
+
+
+        /* ------------------- */
+        /* --- Floating Action Button & Modal --- */
+        /* ------------------- */
+
+        #add-task-fab {
+            position: fixed;
+            bottom: 80px; /* Above mobile nav */
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        #add-task-fab:hover {
+            background-color: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        #modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 20px;
+        }
+        
+        #close-modal-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+
+        /* ------------------- */
+        /* --- Mobile Navigation --- */
+        /* ------------------- */
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+        
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+
+        /* ------------------- */
+        /* --- Responsive Design (Desktop) --- */
+        /* ------------------- */
+
+        @media (min-width: 768px) {
+            .board {
+                flex-direction: row;
+                align-items: flex-start; /* Align lists to the top */
             }
-            .cursor, .trail-image {
-                display: none;
+
+            .list {
+                width: 300px; /* Fixed width for lists on larger screens */
             }
-            .main-container {
-                width: 100vw;
-                flex-direction: column;
-                transform: none !important;
-                height: auto;
+            
+            #add-task-fab {
+                bottom: 30px;
+                right: 30px;
             }
-            section {
-                width: 100vw;
-                height: auto;
-                min-height: 100vh;
-                padding: 4rem 2rem;
+
+            .mobile-nav {
+                display: none; /* Hide mobile nav on desktop */
             }
-            .intro-content h1 { font-size: 15vw; }
-            .project-item h2 { font-size: 10vw; }
-            #about .content { flex-direction: column; }
-            .about-image { width: 80vw; height: 100vw; }
-            #contact h2 { font-size: 12vw; }
+        }
+        
+        /* Helper class */
+        .hidden {
+            display: none !important;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="cursor"></div>
+    <div id="auth-container">
+        <div class="auth-form-wrapper">
+            <form id="login-form">
+                <h2>Login</h2>
+                <p id="login-error" class="auth-error"></p>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p class="form-toggle">Don't have an account? <span class="toggle-link" id="show-register">Register</span></p>
+            </form>
 
-    <header class="header-nav">
-        <ul>
-            <li><a href="#intro" class="nav-link magnetic-link active" data-index="0">01</a></li>
-            <li><a href="#projects" class="nav-link magnetic-link" data-index="1">02</a></li>
-            <li><a href="#about" class="nav-link magnetic-link" data-index="2">03</a></li>
-            <li><a href="#contact" class="nav-link magnetic-link" data-index="3">04</a></li>
-        </ul>
-    </header>
+            <form id="register-form" class="hidden">
+                <h2>Register</h2>
+                <p id="register-error" class="auth-error"></p>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <p class="form-toggle">Already have an account? <span class="toggle-link" id="show-login">Login</span></p>
+            </form>
+        </div>
+    </div>
 
-    <main class="main-container">
+    <div id="app-container">
+        <header class="header">
+            <h1 class="header-title">KanbanFire</h1>
+            <div class="header-controls">
+                <button id="theme-toggle">☀️</button>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <main class="board" id="kanban-board">
+            <div class="list" data-status="todo">
+                <h2 class="list-header">To Do</h2>
+                <div class="cards-container" id="todo-cards"></div>
+            </div>
+
+            <div class="list" data-status="inprogress">
+                <h2 class="list-header">In Progress</h2>
+                <div class="cards-container" id="inprogress-cards"></div>
+            </div>
+
+            <div class="list" data-status="done">
+                <h2 class="list-header">Done</h2>
+                <div class="cards-container" id="done-cards"></div>
+            </div>
+        </main>
+
+        <button id="add-task-fab">+</button>
         
-        <section id="intro">
-            <div class="intro-content">
-                <h1>Merhaba, ben <span class="name">Farhad</span>.</h1>
-                <p>Kullanıcı deneyimini sanatla birleştiren, interaktif ve unutulmaz web siteleri yaratıyorum.</p>
+        <nav class="mobile-nav">
+            <div class="nav-item active">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path></svg>
+                <span>Boards</span>
             </div>
-            <div class="scroll-indicator">Keşfetmek için kaydır →</div>
-        </section>
-
-        <section id="projects">
-            <div class="project-list">
-                <div class="project-item" data-image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop">
-                    <h2>E-Ticaret Platformu</h2>
-                    <span>React / Redux</span>
-                </div>
-                 <div class="project-item" data-image="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop">
-                    <h2>Görev Yönetim Aracı</h2>
-                    <span>Vue.js / Firebase</span>
-                </div>
-                 <div class="project-item" data-image="https://images.unsplash.com/photo-1504639725590-775b6d045d16?q=80&w=800&auto=format&fit=crop">
-                    <h2>3D Portföy Sitesi</h2>
-                    <span>Three.js / GSAP</span>
-                </div>
+            <div class="nav-item">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                <span>My Tasks</span>
             </div>
-        </section>
+            <div class="nav-item">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 12.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
+                <span>Notifications</span>
+            </div>
+            <div class="nav-item">
+                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
+                <span>Profile</span>
+            </div>
+        </nav>
 
-        <section id="about">
-            <div class="content">
-                <div class="about-image"></div>
-                <div class="about-text">
-                    <h2>Ben Kimim?</h2>
-                    <p>Kod sadece bir araç değil, aynı zamanda bir ifade biçimidir. Ben Farhad, estetiği ve fonksiyonelliği bir araya getiren bir frontend geliştiricisiyim. Piksel mükemmelliğine olan takıntım ve akıcı animasyonlara olan tutkumla, markaların dijital dünyada parlamasını sağlıyorum.</p>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn">&times;</button>
+            <h3>Add New Task</h3>
+            <form id="add-task-form">
+                <div class="form-group">
+                    <label for="task-title">Title</label>
+                    <input type="text" id="task-title" required>
                 </div>
-            </div>
-        </section>
+                <div class="form-group">
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="task-attachment">Attachment</label>
+                    <input type="file" id="task-attachment">
+                </div>
+                <div class="form-group">
+                    <progress id="upload-progress" value="0" max="100" style="width: 100%; display: none;"></progress>
+                </div>
+                <button type="submit" class="btn">Add Task</button>
+            </form>
+        </div>
+    </div>
 
-        <section id="contact">
-            <div class="content">
-                <h2>Bir fikriniz mi var? <br> <a href="mailto:farhad@ornek.com" class="magnetic-link">Hadi hayata geçirelim.</a></h2>
-                <p>farhad@ornek.com</p>
-            </div>
-        </section>
 
-    </main>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // ----------------------------------------------------
+        // --- 🔑 1. FIREBASE CONFIGURATION & INITIALIZATION ---
+        // ----------------------------------------------------
+        // IMPORTANT: Replace this with your own Firebase project configuration!
+        const firebaseConfig = {
+            apiKey: "AIzaSyCT7Ih36xNcp3rMgFB17OyleTh-kaeBBZk",
+            authDomain: "weightoff-b7916.firebaseapp.com",
+            databaseURL: "https://weightoff-b7916-default-rtdb.firebaseio.com",
+            projectId: "weightoff-b7916",
+            storageBucket: "weightoff-b7916.firebasestorage.app",
+            messagingSenderId: "623909660439",
+            appId: "1:623909660439:web:29d5305a401c84bfd2b952",
+            measurementId: "G-006DGJR805"
+        };
 
-            // Mobil kontrol
-            const isMobile = window.innerWidth <= 768;
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        let currentUser = null;
+        let unsubscribeTasks = null; // To store the real-time listener unsub function
 
-            if (!isMobile) {
-                // Özel İmleç
-                const cursor = document.querySelector('.cursor');
-                window.addEventListener('mousemove', e => {
-                    gsap.to(cursor, { duration: 0.3, x: e.clientX, y: e.clientY });
-                });
+        // ------------------------------------
+        // --- 👤 2. AUTHENTICATION LOGIC ---
+        // ------------------------------------
+        const authContainer = document.getElementById('auth-container');
+        const appContainer = document.getElementById('app-container');
+        
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const loginError = document.getElementById('login-error');
+        const registerError = document.getElementById('register-error');
 
-                document.querySelectorAll('a, .project-item').forEach(el => {
-                    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-                    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-                });
-
-                // Yatay Kaydırma
-                const container = document.querySelector('.main-container');
-                let currentScroll = 0;
-                let targetScroll = 0;
-                let ease = 0.075;
-
-                document.body.style.height = `${container.getBoundingClientRect().width}px`;
-                
-                window.addEventListener('wheel', (e) => {
-                    targetScroll += e.deltaY;
-                    targetScroll = Math.max(0, targetScroll);
-                    targetScroll = Math.min(window.innerWidth * 3, targetScroll);
-                });
-
-                function smoothScroll() {
-                    currentScroll += (targetScroll - currentScroll) * ease;
-                    container.style.transform = `translateX(-${currentScroll}px)`;
-                    requestAnimationFrame(smoothScroll);
-                }
-                smoothScroll();
-
-                // Navigasyon
-                const navLinks = document.querySelectorAll('.nav-link');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const index = parseInt(e.target.dataset.index);
-                        targetScroll = window.innerWidth * index;
-                    });
-                });
-
-                // Aktif Navigasyon Linkini Güncelleme
-                window.addEventListener('scroll', () => { // Scroll event'i yatay kaydırma için de kullanılabilir
-                    let currentIndex = Math.round(targetScroll / window.innerWidth);
-                    navLinks.forEach((link, index) => {
-                        if(index === currentIndex) {
-                            link.classList.add('active');
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                });
-
-                // Manyetik Butonlar
-                const magneticLinks = document.querySelectorAll('.magnetic-link');
-                magneticLinks.forEach(link => {
-                    const item = link;
-                    item.addEventListener('mousemove', function(e) {
-                        const { clientX, clientY } = e;
-                        const { left, top, width, height } = item.getBoundingClientRect();
-                        const x = (clientX - (left + width / 2)) * 0.4;
-                        const y = (clientY - (top + height / 2)) * 0.4;
-                        gsap.to(item, { x: x, y: y, duration: 0.5, ease: "power2.out" });
-                    });
-                    item.addEventListener('mouseleave', function() {
-                        gsap.to(item, { x: 0, y: 0, duration: 0.5, ease: "power2.out" });
-                    });
-                });
-
-                // İmleç İzleme (Trail) Efekti
-                const projectItems = document.querySelectorAll('.project-item');
-                let trailImages = [];
-                let imageIndex = 0;
-                const MAX_IMAGES = 10;
-
-                for (let i = 0; i < MAX_IMAGES; i++) {
-                    let div = document.createElement('div');
-                    let img = document.createElement('img');
-                    div.appendChild(img);
-                    div.classList.add('trail-image');
-                    document.body.appendChild(div);
-                    trailImages.push(div);
-                }
-
-                window.addEventListener('mousemove', (e) => {
-                    let hoveredProject = Array.from(projectItems).find(item => item.matches(':hover'));
-                    if (hoveredProject) {
-                        const imgElement = trailImages[imageIndex];
-                        imgElement.children[0].src = hoveredProject.dataset.image;
-
-                        gsap.set(imgElement, {
-                            top: e.clientY + 'px',
-                            left: e.clientX + 'px',
-                        });
-
-                        gsap.fromTo(imgElement, {
-                            opacity: 1,
-                            transform: 'translate(-50%, -50%) scale(0.5)',
-                            rotation: Math.random() * 20 - 10
-                        }, {
-                            opacity: 0,
-                            transform: 'translate(-50%, -50%) scale(1)',
-                            duration: 1.5,
-                            ease: "power2.out"
-                        });
-                        
-                        imageIndex = (imageIndex + 1) % MAX_IMAGES;
-                    }
-                });
+        // Listen for authentication state changes
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is logged in
+                currentUser = user;
+                authContainer.style.display = 'none';
+                appContainer.style.display = 'flex';
+                setupRealtimeListener(user.uid);
+            } else {
+                // User is logged out
+                currentUser = null;
+                authContainer.style.display = 'flex';
+                appContainer.style.display = 'none';
+                if (unsubscribeTasks) unsubscribeTasks(); // Stop listening to tasks
             }
         });
+
+        // Login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = loginForm['login-email'].value;
+            const password = loginForm['login-password'].value;
+            auth.signInWithEmailAndPassword(email, password).catch(err => {
+                loginError.textContent = err.message;
+            });
+        });
+
+        // Registration form submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = registerForm['register-email'].value;
+            const password = registerForm['register-password'].value;
+            auth.createUserWithEmailAndPassword(email, password).catch(err => {
+                registerError.textContent = err.message;
+            });
+        });
+        
+        // Logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            auth.signOut();
+        });
+
+        // Form Toggling
+        document.getElementById('show-register').addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+
+        document.getElementById('show-login').addEventListener('click', () => {
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+
+
+        // -------------------------------------
+        // --- 📋 3. KANBAN BOARD & FIRESTORE ---
+        // -------------------------------------
+        const todoCol = document.getElementById('todo-cards');
+        const inprogressCol = document.getElementById('inprogress-cards');
+        const doneCol = document.getElementById('done-cards');
+        
+        // Setup real-time listener for tasks
+        function setupRealtimeListener(userId) {
+            const tasksRef = db.collection('users').doc(userId).collection('tasks').orderBy('createdAt', 'desc');
+            
+            unsubscribeTasks = tasksRef.onSnapshot(snapshot => {
+                // Clear existing cards
+                todoCol.innerHTML = '';
+                inprogressCol.innerHTML = '';
+                doneCol.innerHTML = '';
+                
+                snapshot.docs.forEach(doc => {
+                    const task = { id: doc.id, ...doc.data() };
+                    renderTaskCard(task);
+                });
+            }, error => {
+                console.error("Error fetching tasks: ", error);
+            });
+        }
+        
+        // Render a single task card
+        function renderTaskCard(task) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.setAttribute('draggable', true);
+            card.dataset.id = task.id;
+            
+            const attachmentHTML = task.fileUrl 
+                ? `<div class="card-attachment"><a href="${task.fileUrl}" target="_blank">📎 ${task.fileName || 'Attachment'}</a></div>` 
+                : '';
+
+            card.innerHTML = `
+                <div class="card-title">${task.title}</div>
+                <div class="card-description">${task.description}</div>
+                <div class="card-footer">
+                    ${attachmentHTML}
+                    <button class="delete-card-btn" data-id="${task.id}">🗑️</button>
+                </div>
+            `;
+
+            // Append to the correct column
+            if (task.status === 'todo') todoCol.appendChild(card);
+            else if (task.status === 'inprogress') inprogressCol.appendChild(card);
+            else if (task.status === 'done') doneCol.appendChild(card);
+
+            // Add event listeners for this new card
+            card.addEventListener('dragstart', handleDragStart);
+            card.querySelector('.delete-card-btn').addEventListener('click', handleDeleteTask);
+        }
+
+        // Add a new task
+        const addTaskForm = document.getElementById('add-task-form');
+        const attachmentInput = document.getElementById('task-attachment');
+        const uploadProgress = document.getElementById('upload-progress');
+
+        addTaskForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const title = addTaskForm['task-title'].value;
+            const description = addTaskForm['task-description'].value;
+            const file = attachmentInput.files[0];
+            
+            let fileData = null;
+
+            if (file) {
+                try {
+                    fileData = await uploadFile(currentUser.uid, file);
+                } catch (error) {
+                    console.error("File upload failed:", error);
+                    alert("File upload failed. Please try again.");
+                    return;
+                }
+            }
+
+            const newTask = {
+                title,
+                description,
+                status: 'todo',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                fileUrl: fileData ? fileData.url : null,
+                fileName: fileData ? fileData.name : null,
+            };
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('tasks').add(newTask);
+                closeModal();
+                addTaskForm.reset();
+            } catch (error) {
+                console.error("Error adding task: ", error);
+            }
+        });
+        
+        // Delete a task
+        function handleDeleteTask(e) {
+            const taskId = e.target.closest('.delete-card-btn').dataset.id;
+            if (confirm('Are you sure you want to delete this task?')) {
+                db.collection('users').doc(currentUser.uid).collection('tasks').doc(taskId).delete()
+                  .catch(err => console.error("Error deleting task:", err));
+            }
+        }
+        
+        // ------------------------------------
+        // --- 📁 4. FIREBASE STORAGE UPLOAD ---
+        // ------------------------------------
+        function uploadFile(userId, file) {
+            return new Promise((resolve, reject) => {
+                const filePath = `uploads/${userId}/${Date.now()}_${file.name}`;
+                const fileRef = storage.ref(filePath);
+                const uploadTask = fileRef.put(file);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        uploadProgress.style.display = 'block';
+                        uploadProgress.value = progress;
+                    }, 
+                    (error) => {
+                        console.error('Upload failed:', error);
+                        uploadProgress.style.display = 'none';
+                        reject(error);
+                    }, 
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            uploadProgress.style.display = 'none';
+                            resolve({ url: downloadURL, name: file.name });
+                        });
+                    }
+                );
+            });
+        }
+
+
+        // -----------------------------------------
+        // --- 💨 5. DRAG & DROP FUNCTIONALITY ---
+        // -----------------------------------------
+        const lists = document.querySelectorAll('.list');
+        
+        // Add drop event listeners to lists
+        lists.forEach(list => {
+            list.addEventListener('dragover', handleDragOver);
+            list.addEventListener('dragleave', handleDragLeave);
+            list.addEventListener('drop', handleDrop);
+        });
+
+        let draggedCard = null;
+
+        function handleDragStart(e) {
+            draggedCard = e.target;
+            // A short delay to allow the browser to render the drag image
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // This is necessary to allow dropping
+            const list = e.target.closest('.list');
+            if (list) {
+                list.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+             const list = e.target.closest('.list');
+             if (list) {
+                list.classList.remove('drag-over');
+             }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const list = e.target.closest('.list');
+            if (list && draggedCard) {
+                list.classList.remove('drag-over');
+                draggedCard.classList.remove('dragging');
+                
+                const newStatus = list.dataset.status;
+                const taskId = draggedCard.dataset.id;
+
+                // Update Firestore
+                db.collection('users').doc(currentUser.uid).collection('tasks').doc(taskId).update({
+                    status: newStatus,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error("Error updating task status:", err));
+                
+                draggedCard = null;
+            }
+        }
+        
+
+        // -------------------------------
+        // --- ✨ 6. UI & EXTRA FEATURES ---
+        // -------------------------------
+        
+        // Modal logic
+        const modalOverlay = document.getElementById('modal-overlay');
+        const addTaskFab = document.getElementById('add-task-fab');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        
+        const openModal = () => modalOverlay.classList.add('show');
+        const closeModal = () => {
+            modalOverlay.classList.remove('show');
+            addTaskForm.reset();
+            uploadProgress.style.display = 'none';
+            uploadProgress.value = 0;
+        }
+
+        addTaskFab.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+        
+        // Light/Dark mode toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Check for saved theme in local storage
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '🌙';
+        }
+
     </script>
 </body>
 </html>
