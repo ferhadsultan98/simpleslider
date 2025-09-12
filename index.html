@@ -3,320 +3,735 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Management System Demo</title>
+    <title>PrimeTrade File Hub</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* CSS Variables for theming */
+        :root {
+            --primary-color: #0a2540;
+            --accent-color: #635bff;
+            --background-color: #f0f2f5;
+            --surface-color: #ffffff;
+            --text-color: #333333;
+            --text-light-color: #ffffff;
+            --border-color: #e6e6e6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+        }
+
+        /* General Reset & Body Styles */
+        * {
             margin: 0;
-            background: #f4f4f4;
-        }
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-        #sidebar {
-            width: 200px;
-            background: #333;
-            color: white;
-            padding: 20px;
-        }
-        #sidebar ul {
-            list-style: none;
             padding: 0;
-            margin: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        #sidebar li {
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overscroll-behavior-y: contain;
         }
-        #sidebar li:hover {
-            background: #555;
-        }
-        #main {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .section {
+
+        /* Main App Views */
+        .view {
             display: none;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .cards {
+
+        .view.active {
             display: flex;
-            flex-wrap: wrap;
         }
-        .card {
-            background: white;
-            padding: 15px;
-            margin: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 200px;
+
+        /* Authentication View */
+        #auth-view {
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .auth-container h2 {
+            margin-bottom: 24px;
+            color: var(--primary-color);
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background: #f4f4f4;
-        }
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        #modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+
+        .auth-form {
             display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .auth-form.active {
+            display: flex;
+        }
+        
+        .input-group {
+            width: 100%;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.2);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--text-light-color);
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: #534bde;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .auth-toggle {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        #auth-error {
+            color: #d93025;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+
+        /* Main App View */
+        #app-view {
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        main {
+            flex-grow: 1;
+            padding: 24px;
+        }
+
+        .app-section {
+            display: none;
+        }
+
+        .app-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+        }
+
+        /* Bottom Navigation Bar (Mobile) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--surface-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.07);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex-grow: 1;
+            padding: 8px 0;
+            text-decoration: none;
         }
-        .modal-content {
-            background: white;
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            transition: transform 0.2s;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .nav-item:active svg {
+            transform: scale(0.9);
+        }
+
+        /* File Management Section */
+        #file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .file-card {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            word-break: break-word;
+        }
+
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            color: var(--accent-color);
+        }
+        
+        .file-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #f1f1f1;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+        
+        .delete-btn:hover {
+            background-color: #e2e2e2;
+            opacity: 1;
+        }
+
+        .upload-section {
+            margin-top: 32px;
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        #upload-form input[type="file"] {
+            border: 1px dashed var(--border-color);
             padding: 20px;
-            border-radius: 5px;
-            width: 400px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        input {
+            border-radius: 8px;
             display: block;
             width: 100%;
-            margin: 10px 0;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            margin-bottom: 16px;
         }
-        .form-buttons {
-            display: flex;
-            justify-content: space-between;
+
+        /* Profile & Settings Section */
+        .info-card {
+             background-color: var(--surface-color);
+             padding: 24px;
+             border-radius: var(--border-radius);
+             box-shadow: var(--shadow);
         }
-        .form-buttons button {
-            width: 48%;
+
+        .info-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .info-card p strong {
+            color: var(--primary-color);
+        }
+        
+        .btn-danger {
+            background-color: #d93025;
+        }
+        .btn-danger:hover {
+            background-color: #c5221f;
+        }
+        
+        .btn-secondary {
+            background-color: #5f6368;
+        }
+        .btn-secondary:hover {
+            background-color: #4c4f53;
+        }
+
+        /* Responsive Design for Desktop */
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+            }
+            #app-view {
+                display: flex;
+                width: 100%;
+                padding-bottom: 0;
+            }
+            .bottom-nav {
+                position: relative;
+                flex-direction: column;
+                width: 240px;
+                height: 100vh;
+                justify-content: flex-start;
+                padding-top: 40px;
+                gap: 10px;
+                background-color: var(--primary-color);
+                box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+            }
+            .nav-item {
+                flex-direction: row;
+                justify-content: flex-start;
+                width: 85%;
+                padding: 16px;
+                border-radius: 8px;
+                color: #aeb8c3;
+            }
+            .nav-item.active {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: var(--text-light-color);
+            }
+            .nav-item svg {
+                margin-bottom: 0;
+                margin-right: 16px;
+            }
+            .nav-item span {
+                font-size: 1rem;
+            }
+            main {
+                flex-grow: 1;
+                padding: 40px;
+                max-height: 100vh;
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="sidebar">
-            <ul>
-                <li onclick="showSection('dashboard')">Dashboard</li>
-                <li onclick="showSection('products')">Products</li>
-                <li onclick="showSection('stock')">Stock</li>
-                <li onclick="showSection('transactions')">Transactions</li>
-                <li onclick="showSection('reports')">Reports</li>
-            </ul>
+    <div id="auth-view" class="view active">
+        <div class="auth-container">
+            <div id="login-form" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <form>
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+            </div>
+            <div id="register-form" class="auth-form">
+                <h2>Create Account</h2>
+                <form>
+                    <div class="input-group">
+                        <input type="text" id="register-name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="register-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="register-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                </form>
+            </div>
+            <p id="auth-error"></p>
+            <button id="auth-toggle-btn" class="auth-toggle">Don't have an account? Register</button>
         </div>
-        <div id="main">
-            <div id="dashboard" class="section">
-                <h2>Dashboard</h2>
-                <div class="cards">
-                    <div class="card">
-                        <h3>Total Products</h3>
-                        <span id="totalProducts"></span>
-                    </div>
-                    <div class="card">
-                        <h3>Total Stock Quantity</h3>
-                        <span id="totalStockQuantity"></span>
-                    </div>
-                    <div class="card">
-                        <h3>Total Transactions</h3>
-                        <span id="totalTransactions"></span>
-                    </div>
-                    <div class="card">
-                        <h3>Total Warehouses</h3>
-                        <span id="totalWarehouses"></span>
-                    </div>
+    </div>
+
+    <div id="app-view" class="view">
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item active" data-section="home-section">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                <span>Home</span>
+            </a>
+            <a href="#files" class="nav-item" data-section="files-section">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg>
+                <span>Files</span>
+            </a>
+            <a href="#profile" class="nav-item" data-section="profile-section">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                <span>Profile</span>
+            </a>
+            <a href="#settings" class="nav-item" data-section="settings-section">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-1.007 1.11-1.226.554-.225 1.159-.242 1.743-.048.584.194 1.112.558 1.442.992.33.434.505 1.01.505 1.625v2.25M18 9.75v8.25c0 .621-.504 1.125-1.125 1.125H7.125A1.125 1.125 0 0 1 6 18V9.75m12 0a2.25 2.25 0 0 0-2.25-2.25H8.25a2.25 2.25 0 0 0-2.25 2.25M12 15.75a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <main>
+            <section id="home-section" class="app-section active">
+                <h1 class="page-header">Home</h1>
+                <div class="info-card">
+                    <p>Welcome to the <strong>PrimeTrade File Hub</strong>.</p>
+                    <p>Use the navigation to manage your files, view your profile, and configure settings.</p>
                 </div>
-                <button onclick="openModal()">+ Add Product</button>
-            </div>
-            <div id="products" class="section">
-                <h2>Products</h2>
-                <table id="productsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>SKU</th>
-                            <th>Unit</th>
-                            <th>Minimum Stock</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="stock" class="section">
-                <h2>Stock</h2>
-                <table id="stockTable">
-                    <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Warehouse Name</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="transactions" class="section">
-                <h2>Transactions</h2>
-                <table id="transactionsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Type</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>User</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="reports" class="section">
-                <h2>Reports</h2>
-                <p>Coming soon: charts & analytics...</p>
-            </div>
-        </div>
+            </section>
+
+            <section id="files-section" class="app-section">
+                <h1 class="page-header">Your Files</h1>
+                <div id="file-grid">
+                    </div>
+                <div class="upload-section">
+                    <h3>Upload New File</h3>
+                    <form id="upload-form">
+                        <input type="file" id="file-input" required>
+                        <button type="submit" class="btn">Upload</button>
+                    </form>
+                    <p id="upload-status"></p>
+                </div>
+            </section>
+
+            <section id="profile-section" class="app-section">
+                <h1 class="page-header">Profile</h1>
+                <div id="user-profile-card" class="info-card">
+                    </div>
+            </section>
+
+            <section id="settings-section" class="app-section">
+                <h1 class="page-header">Settings</h1>
+                <div class="info-card">
+                    <p>Manage your application settings here.</p>
+                    <br>
+                    <button id="logout-btn" class="btn btn-danger" style="width: 100%;">Logout</button>
+                    <br><br>
+                    <hr><br>
+                    <p><strong>Debug Tools</strong></p>
+                    <button id="dbtest-btn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Test Database Connection</button>
+                    <pre id="dbtest-response" style="background: #eee; padding: 10px; border-radius: 8px; margin-top: 10px; display: none;"></pre>
+                </div>
+            </section>
+        </main>
     </div>
-    <div id="modal">
-        <div class="modal-content">
-            <h2>Add Product</h2>
-            <input id="name" placeholder="Product Name" required>
-            <input id="sku" placeholder="SKU" required>
-            <input id="unit" placeholder="Unit (e.g., pcs, kg)" required>
-            <input id="minStock" type="number" placeholder="Minimum Stock" required>
-            <div class="form-buttons">
-                <button onclick="saveProduct()">Save</button>
-                <button onclick="closeModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
+
     <script>
-        let products = [
-            {id: 1, name: 'Widget A', sku: 'WID001', unit: 'pcs', minStock: 10},
-            {id: 2, name: 'Gadget B', sku: 'GAD001', unit: 'kg', minStock: 5},
-            {id: 3, name: 'Tool C', sku: 'TOOL001', unit: 'pcs', minStock: 20}
-        ];
-        let stock = [
-            {productName: 'Widget A', warehouseName: 'WH1', quantity: 100},
-            {productName: 'Widget A', warehouseName: 'WH2', quantity: 50},
-            {productName: 'Gadget B', warehouseName: 'WH1', quantity: 20},
-            {productName: 'Tool C', warehouseName: 'WH2', quantity: 30}
-        ];
-        let transactions = [
-            {id: 1, type: 'in', product: 'Widget A', quantity: 100, user: 'Admin', date: '2025-09-10'},
-            {id: 2, type: 'out', product: 'Gadget B', quantity: 5, user: 'User1', date: '2025-09-11'},
-            {id: 3, type: 'transfer', product: 'Tool C', quantity: 10, user: 'Admin', date: '2025-09-12'}
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIG & STATE ---
+            const API_BASE_URL = 'https://api.primetradegroup.az';
+            let state = {
+                user: null,
+                token: null,
+                files: []
+            };
 
-        function updateStats() {
-            document.getElementById('totalProducts').innerText = products.length;
-            const totalQty = stock.reduce((sum, s) => sum + s.quantity, 0);
-            document.getElementById('totalStockQuantity').innerText = totalQty;
-            document.getElementById('totalTransactions').innerText = transactions.length;
-            const uniqueWarehouses = [...new Set(stock.map(s => s.warehouseName))].length;
-            document.getElementById('totalWarehouses').innerText = uniqueWarehouses;
-        }
+            // --- DOM SELECTORS ---
+            const views = {
+                auth: document.getElementById('auth-view'),
+                app: document.getElementById('app-view')
+            };
 
-        function populateProductsTable() {
-            const tbody = document.getElementById('productsTable').querySelector('tbody');
-            tbody.innerHTML = '';
-            products.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${p.id}</td><td>${p.name}</td><td>${p.sku}</td><td>${p.unit}</td><td>${p.minStock}</td>`;
-                tbody.appendChild(tr);
+            const sections = {
+                home: document.getElementById('home-section'),
+                files: document.getElementById('files-section'),
+                profile: document.getElementById('profile-section'),
+                settings: document.getElementById('settings-section'),
+            };
+
+            const forms = {
+                login: document.querySelector('#login-form form'),
+                register: document.querySelector('#register-form form'),
+                upload: document.getElementById('upload-form'),
+            };
+
+            const navItems = document.querySelectorAll('.nav-item');
+            const authToggleBtn = document.getElementById('auth-toggle-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const dbTestBtn = document.getElementById('dbtest-btn');
+            const fileGrid = document.getElementById('file-grid');
+            const userProfileCard = document.getElementById('user-profile-card');
+            const authErrorMsg = document.getElementById('auth-error');
+
+            // --- API HELPERS ---
+            const apiRequest = async (endpoint, method = 'GET', body = null, needsAuth = true) => {
+                const headers = new Headers({ 'Content-Type': 'application/json' });
+                if (needsAuth && state.token) {
+                    headers.append('Authorization', `Bearer ${state.token}`);
+                }
+
+                const config = { method, headers };
+                if (body) {
+                    config.body = body instanceof FormData ? body : JSON.stringify(body);
+                    if (body instanceof FormData) {
+                         headers.delete('Content-Type'); // Browser sets it automatically with boundary
+                    }
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                        throw new Error(errorData.message || 'An unknown error occurred');
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`API Error on ${method} ${endpoint}:`, error);
+                    throw error;
+                }
+            };
+            
+            // --- UI RENDERING ---
+            const showView = (viewName) => {
+                Object.values(views).forEach(v => v.classList.remove('active'));
+                views[viewName].classList.add('active');
+            };
+
+            const showSection = (sectionId) => {
+                Object.values(sections).forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+
+                navItems.forEach(item => {
+                    item.classList.toggle('active', item.dataset.section === sectionId);
+                });
+            };
+
+            const renderFiles = () => {
+                fileGrid.innerHTML = '';
+                if (state.files.length === 0) {
+                    fileGrid.innerHTML = '<p>No files found. Try uploading one!</p>';
+                    return;
+                }
+                state.files.forEach(file => {
+                    const card = document.createElement('div');
+                    card.className = 'file-card';
+                    card.innerHTML = `
+                        <div class="file-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                        </div>
+                        <p class="file-name">${file.originalname}</p>
+                        <button class="delete-btn" data-id="${file._id}">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
+                    `;
+                    fileGrid.appendChild(card);
+                });
+            };
+
+            const renderProfile = () => {
+                if (!state.user) return;
+                userProfileCard.innerHTML = `
+                    <p><strong>Name:</strong> ${state.user.name}</p>
+                    <p><strong>Email:</strong> ${state.user.email}</p>
+                    <p><strong>User ID:</strong> ${state.user.id}</p>
+                `;
+            };
+
+            // --- APPLICATION LOGIC ---
+            const handleLogin = async (email, password) => {
+                try {
+                    authErrorMsg.textContent = 'Logging in...';
+                    const data = await apiRequest('/auth/login', 'POST', { email, password }, false);
+                    state.token = data.token;
+                    state.user = { id: data.user.id, name: data.user.name, email: data.user.email };
+                    
+                    localStorage.setItem('session', JSON.stringify({ token: state.token, user: state.user }));
+                    awaitinitializeApp();
+                    authErrorMsg.textContent = '';
+                } catch (error) {
+                    authErrorMsg.textContent = error.message;
+                }
+            };
+            
+            const handleRegister = async (name, email, password) => {
+                try {
+                    authErrorMsg.textContent = 'Registering...';
+                    await apiRequest('/auth/register', 'POST', { name, email, password }, false);
+                    authErrorMsg.textContent = 'Registration successful! Please log in.';
+                    toggleAuthForm(); // Switch to login form
+                } catch (error) {
+                    authErrorMsg.textContent = error.message;
+                }
+            };
+
+            const handleLogout = () => {
+                state.user = null;
+                state.token = null;
+                state.files = [];
+                localStorage.removeItem('session');
+                showView('auth');
+            };
+            
+            const handleFetchFiles = async () => {
+                try {
+                    const data = await apiRequest('/files/list', 'GET');
+                    state.files = data.files;
+                    renderFiles();
+                } catch (error) {
+                    fileGrid.innerHTML = `<p style="color: red;">Error fetching files: ${error.message}</p>`;
+                }
+            };
+
+            const handleFileUpload = async (file) => {
+                const uploadStatus = document.getElementById('upload-status');
+                try {
+                    uploadStatus.textContent = `Uploading ${file.name}...`;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    await apiRequest('/files/upload', 'POST', formData, true);
+                    uploadStatus.textContent = 'Upload successful!';
+                    forms.upload.reset();
+                    await handleFetchFiles(); // Refresh file list
+                    setTimeout(() => uploadStatus.textContent = '', 3000);
+                } catch (error) {
+                    uploadStatus.textContent = `Upload failed: ${error.message}`;
+                }
+            };
+            
+            const handleDeleteFile = async (fileId) => {
+                if (!confirm('Are you sure you want to delete this file?')) return;
+                try {
+                    await apiRequest(`/files/${fileId}`, 'DELETE', null, true);
+                    await handleFetchFiles(); // Refresh list
+                } catch (error) {
+                    alert(`Error deleting file: ${error.message}`);
+                }
+            };
+
+            const handleDbTest = async () => {
+                const responseEl = document.getElementById('dbtest-response');
+                try {
+                    responseEl.style.display = 'block';
+                    responseEl.textContent = 'Testing...';
+                    const data = await apiRequest('/dbtest', 'GET', null, false);
+                    responseEl.textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    responseEl.textContent = `Error: ${error.message}`;
+                }
+            };
+            
+            const toggleAuthForm = () => {
+                const loginForm = document.getElementById('login-form');
+                const registerForm = document.getElementById('register-form');
+                const isLoginVisible = loginForm.classList.contains('active');
+                
+                loginForm.classList.toggle('active', !isLoginVisible);
+                registerForm.classList.toggle('active', isLoginVisible);
+                authToggleBtn.textContent = isLoginVisible ? 'Already have an account? Login' : 'Don\'t have an account? Register';
+                authErrorMsg.textContent = '';
+            };
+
+            // --- INITIALIZATION ---
+            const initializeApp = async () => {
+                renderProfile();
+                showView('app');
+                showSection('home-section');
+                await handleFetchFiles();
+            };
+            
+            const checkSession = () => {
+                const session = localStorage.getItem('session');
+                if (session) {
+                    const { token, user } = JSON.parse(session);
+                    state.token = token;
+                    state.user = user;
+                    initializeApp();
+                } else {
+                    showView('auth');
+                }
+            };
+
+            // --- EVENT LISTENERS ---
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(item.dataset.section);
+                });
             });
-        }
 
-        function populateStockTable() {
-            const tbody = document.getElementById('stockTable').querySelector('tbody');
-            tbody.innerHTML = '';
-            stock.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${s.productName}</td><td>${s.warehouseName}</td><td>${s.quantity}</td>`;
-                tbody.appendChild(tr);
+            forms.login.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                handleLogin(email, password);
             });
-        }
-
-        function populateTransactionsTable() {
-            const tbody = document.getElementById('transactionsTable').querySelector('tbody');
-            tbody.innerHTML = '';
-            transactions.forEach(t => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${t.id}</td><td>${t.type}</td><td>${t.product}</td><td>${t.quantity}</td><td>${t.user}</td><td>${t.date}</td>`;
-                tbody.appendChild(tr);
+            
+            forms.register.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('register-name').value;
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                handleRegister(name, email, password);
             });
-        }
-
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
+            
+            forms.upload.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fileInput = document.getElementById('file-input');
+                if (fileInput.files.length > 0) {
+                    handleFileUpload(fileInput.files[0]);
+                }
             });
-            document.getElementById(id).style.display = 'block';
-        }
+            
+            fileGrid.addEventListener('click', (e) => {
+                const deleteButton = e.target.closest('.delete-btn');
+                if (deleteButton) {
+                    handleDeleteFile(deleteButton.dataset.id);
+                }
+            });
 
-        function openModal() {
-            document.getElementById('modal').style.display = 'flex';
-        }
+            authToggleBtn.addEventListener('click', toggleAuthForm);
+            logoutBtn.addEventListener('click', handleLogout);
+            dbTestBtn.addEventListener('click', handleDbTest);
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-            // Clear form
-            document.getElementById('name').value = '';
-            document.getElementById('sku').value = '';
-            document.getElementById('unit').value = '';
-            document.getElementById('minStock').value = '';
-        }
-
-        function saveProduct() {
-            const name = document.getElementById('name').value.trim();
-            const sku = document.getElementById('sku').value.trim();
-            const unit = document.getElementById('unit').value.trim();
-            const minStock = parseInt(document.getElementById('minStock').value);
-            if (!name || !sku || !unit || isNaN(minStock)) {
-                alert('Please fill all fields correctly.');
-                return;
-            }
-            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-            products.push({id: newId, name, sku, unit, minStock});
-            closeModal();
-            populateProductsTable();
-            updateStats();
-        }
-
-        window.onload = () => {
-            populateProductsTable();
-            populateStockTable();
-            populateTransactionsTable();
-            updateStats();
-            showSection('dashboard');
-        };
+            // --- START ---
+            checkSession();
+        });
     </script>
 </body>
 </html>
