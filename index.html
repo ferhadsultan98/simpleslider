@@ -1112,10 +1112,15 @@
         }
 
         function getStoredUser() {
-            const user = localStorage.getItem('user');
-            return user ? JSON.parse(user) : null;
-        }
-
+    try {
+        const user = localStorage.getItem("user");
+        if (!user) return null;
+        return JSON.parse(user);
+    } catch (e) {
+        console.error("User parse error:", e);
+        return null;
+    }
+}
         function clearUserSession() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
