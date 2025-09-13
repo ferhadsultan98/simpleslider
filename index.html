@@ -827,25 +827,26 @@ async function handleVerify(e) {
             }
         }
 
-        async function deleteFile(fileId) {
-            if (!confirm('Bu faylı silmək istədiyinizə əminsiniz?')) return;
-            
-            try {
-                const response = await fetch(`${API_BASE}/files/delete/${fileId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                
-                if (response.ok) {
-                    showAlert('Fayl uğurla silindi!', 'success', 'alertContainer2');
-                    loadFiles();
-                } else {
-                    throw new Error('Fayl silinə bilmədi');
-                }
-            } catch (error) {
-                showAlert('Silmə xətası: ' + error.message, 'danger', 'alertContainer2');
-            }
+    async function deleteFile(fileId) {
+    if (!confirm('Bu faylı silmək istədiyinizə əminsiniz?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/files/delete/${fileId}`, {
+            method: 'POST', // 🔹 DELETE yox, POST elə
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (response.ok) {
+            showAlert('Fayl uğurla silindi!', 'success', 'alertContainer2');
+            loadFiles();
+        } else {
+            throw new Error('Fayl silinə bilmədi');
         }
+    } catch (error) {
+        showAlert('Silmə xətası: ' + error.message, 'danger', 'alertContainer2');
+    }
+}
+
     </script>
 </body>
 </html>
