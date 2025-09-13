@@ -724,7 +724,6 @@
 
         async function handleRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const button = document.getElementById('registerButton');
@@ -741,7 +740,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name, email, password }),
+                    body: JSON.stringify({ email, password }),
                 });
 
                 const data = await response.json();
@@ -785,7 +784,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    files = data.files || [];
+                    files = data || [];
                     renderFiles();
                 } else {
                     container.innerHTML = '<div class="card"><p>Failed to load files</p></div>';
@@ -1089,10 +1088,10 @@
                             <label>Email</label>
                             <p>${data.email || 'N/A'}</p>
                         </div>
-                        <div class="form-group">
-                            <label>Account Created</label>
-                            <p>${data.createdAt ? formatDate(data.createdAt) : 'Unknown'}</p>
-                        </div>
+                        // <div class="form-group">
+                        //     <label>Account Created</label>
+                        //     <p>${data.createdAt ? formatDate(data.createdAt) : 'Unknown'}</p>
+                        // </div>
                     `;
                 } else {
                     userInfoDiv.innerHTML = '<p>Failed to load profile information</p>';
