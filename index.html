@@ -477,69 +477,69 @@
             }
         }
 
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    authToken = data.token;
-                    currentUser = data.user;
-                    localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    showAlert('Giriş uğurlu!', 'success');
-                    setTimeout(() => {
-                        showFileManager();
-                        loadFiles();
-                    }, 1000);
-                } else {
-                    showAlert(data.error, 'danger');
-                }
-            } catch (error) {
-                showAlert('Giriş xətası: ' + error.message, 'danger');
-            }
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.token;
+            currentUser = { email }; // ✅ yalnız email saxlanır
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showAlert('Giriş uğurlu!', 'success');
+            setTimeout(() => {
+                showFileManager();
+                loadFiles();
+            }, 1000);
+        } else {
+            showAlert(data.error || data.message, 'danger');
         }
+    } catch (error) {
+        showAlert('Giriş xətası: ' + error.message, 'danger');
+    }
+}
 
         async function handleRegister(e) {
-            e.preventDefault();
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    authToken = data.token;
-                    currentUser = data.user;
-                    localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    showAlert('Qeydiyyat uğurlu!', 'success');
-                    setTimeout(() => {
-                        showFileManager();
-                        loadFiles();
-                    }, 1000);
-                } else {
-                    showAlert(data.error, 'danger');
-                }
-            } catch (error) {
-                showAlert('Qeydiyyat xətası: ' + error.message, 'danger');
-            }
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    try {
+        const response = await fetch(`${API_BASE}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.token || null;
+            currentUser = { email }; // ✅ yalnız email saxlanır
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showAlert('Qeydiyyat uğurlu!', 'success');
+            setTimeout(() => {
+                showFileManager();
+                loadFiles();
+            }, 1000);
+        } else {
+            showAlert(data.error || data.message, 'danger');
         }
+    } catch (error) {
+        showAlert('Qeydiyyat xətası: ' + error.message, 'danger');
+    }
+}
 
         function logout() {
             authToken = null;
@@ -555,11 +555,11 @@
             document.getElementById('fileManagerScreen').classList.add('hidden');
         }
 
-        function showFileManager() {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('fileManagerScreen').classList.remove('hidden');
-            document.getElementById('userEmail').textContent = currentUser.email;
-        }
+       function showFileManager() {
+    document.getElementById('authScreen').classList.add('hidden');
+    document.getElementById('fileManagerScreen').classList.remove('hidden');
+    document.getElementById('userEmail').textContent = currentUser?.email || "Naməlum istifadəçi";
+}
 
         function showAlert(message, type, container = 'alertContainer') {
             const alertDiv = document.createElement('div');
