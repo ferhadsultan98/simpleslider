@@ -396,6 +396,17 @@
         Təsdiqlə
     </button>
 </form>
+
+<!-- Login OTP Verify Form -->
+<form id="otpForm" class="hidden">
+  <div class="form-group">
+      <label class="form-label">OTP Kodu</label>
+      <input type="text" class="form-input" id="otpCode" required>
+  </div>
+  <button type="submit" class="btn btn-primary" style="width: 100%;">OTP-ni təsdiqlə</button>
+</form>
+
+        
         <!-- File Manager Screen -->
         <div id="fileManagerScreen" class="hidden">
             <div class="file-manager">
@@ -468,6 +479,7 @@ try {
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     document.getElementById('registerForm').addEventListener('submit', handleRegister);
     document.getElementById('verifyForm').addEventListener('submit', handleVerify); // ✅
+           document.getElementById('otpForm').addEventListener('submit', handleOtpVerify);
     
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 
@@ -498,21 +510,61 @@ async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    
+
     try {
         const response = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-        
+
         const data = await response.json();
-        
-        if (response.ok) {
+
+        if (response.ok && data.status === "OTP_REQUIRED") {
+            showAlert('OTP kodunuz mailə göndərildi!', 'success');
+            
+            // login form gizlədilir, otp form göstərilir
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('otpForm').classList.remove('hidden');
+            
+            // email yadda saxla
+            localStorage.setItem('pendingEmail', email);
+        } else if (response.ok && data.token) {
+            // fallback əgər birbaşa token göndərsə
             authToken = data.token;
-            currentUser = { email }; // ✅ yalnız email saxlanır
+            currentUser = { email };
             localStorage.setItem('authToken', authToken);
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showFileManager();
+            loadFiles();
+        } else {
+            showAlert(data.error || data.message, 'danger');
+        }
+    } catch (error) {
+        showAlert('Giriş xətası: ' + error.message, 'danger');
+    }
+}
+async function handleOtpVerify(e) {
+    e.preventDefault();
+    const email = localStorage.getItem('pendingEmail');
+    const code = document.getElementById('otpCode').value;
+
+    try {
+        const response = await fetch(`${API_BASE}/auth/verify-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            authToken = data.token;
+            currentUser = { email };
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.removeItem('pendingEmail');
+
             showAlert('Giriş uğurlu!', 'success');
             setTimeout(() => {
                 showFileManager();
@@ -522,9 +574,10 @@ async function handleLogin(e) {
             showAlert(data.error || data.message, 'danger');
         }
     } catch (error) {
-        showAlert('Giriş xətası: ' + error.message, 'danger');
+        showAlert('OTP təsdiq xətası: ' + error.message, 'danger');
     }
 }
+
 
   async function handleRegister(e) {
     e.preventDefault();
