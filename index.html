@@ -382,7 +382,20 @@
                 </button>
             </form>
         </div>
-
+<!-- Verify Form -->
+<form id="verifyForm" class="hidden">
+    <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="verifyEmail" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Təsdiq Kodu</label>
+        <input type="text" class="form-input" id="verifyCode" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">
+        Təsdiqlə
+    </button>
+</form>
         <!-- File Manager Screen -->
         <div id="fileManagerScreen" class="hidden">
             <div class="file-manager">
@@ -515,30 +528,27 @@ async function handleLogin(e) {
     }
 }
 
-        async function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
-    
+
     try {
         const response = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
-            authToken = data.token || null;
-            currentUser = { email }; // ✅ yalnız email saxlanır
-            localStorage.setItem('authToken', authToken);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showAlert('Qeydiyyat uğurlu!', 'success');
-            setTimeout(() => {
-                showFileManager();
-                loadFiles();
-            }, 1000);
+            showAlert('Qeydiyyat uğurlu! Mailə kod göndərildi.', 'success');
+            
+            // ✅ Verify formunu göstər
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('verifyForm').classList.remove('hidden');
+            document.getElementById('verifyEmail').value = email;
         } else {
             showAlert(data.error || data.message, 'danger');
         }
