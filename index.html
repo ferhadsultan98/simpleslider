@@ -431,7 +431,13 @@
     <script>
         const API_BASE = 'https://api.primetradegroup.az/api';
         let authToken = localStorage.getItem('authToken');
-        let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        let currentUser = null;
+try {
+  const stored = localStorage.getItem('currentUser');
+  if (stored && stored !== "undefined") {
+    currentUser = JSON.parse(stored);
+  }
+} catch {}
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
