@@ -464,20 +464,18 @@ try {
             setupEventListeners();
         });
 
-        function setupEventListeners() {
-            // Auth forms
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            document.getElementById('registerForm').addEventListener('submit', handleRegister);
-            
-            // File upload
-            document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-            
-            // Drag and drop
-            const uploadZone = document.getElementById('uploadZone');
-            uploadZone.addEventListener('dragover', handleDragOver);
-            uploadZone.addEventListener('dragleave', handleDragLeave);
-            uploadZone.addEventListener('drop', handleDrop);
-        }
+       function setupEventListeners() {
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    document.getElementById('verifyForm').addEventListener('submit', handleVerify); // ✅
+    
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+    const uploadZone = document.getElementById('uploadZone');
+    uploadZone.addEventListener('dragover', handleDragOver);
+    uploadZone.addEventListener('dragleave', handleDragLeave);
+    uploadZone.addEventListener('drop', handleDrop);
+}
 
         // Authentication functions
         function switchTab(tab) {
@@ -556,7 +554,35 @@ async function handleLogin(e) {
         showAlert('Qeydiyyat xətası: ' + error.message, 'danger');
     }
 }
+async function handleVerify(e) {
+    e.preventDefault();
+    const email = document.getElementById('verifyEmail').value;
+    const code = document.getElementById('verifyCode').value;
 
+    try {
+        const response = await fetch(`${API_BASE}/auth/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showAlert('Email uğurla təsdiqləndi!', 'success');
+            
+            // ✅ Girişə yönləndir
+            document.getElementById('verifyForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        } else {
+            showAlert(data.error || data.message, 'danger');
+        }
+    } catch (error) {
+        showAlert('Təsdiq xətası: ' + error.message, 'danger');
+    }
+}
+
+        
         function logout() {
             authToken = null;
             currentUser = null;
